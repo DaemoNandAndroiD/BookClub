@@ -35,7 +35,6 @@ import java.util.Locale
 @Composable
 fun BookWithProgress(
     modifier: Modifier = Modifier,
-    paddingProgress: Dp,
     continueReadingData: ContinueReadingData
 
 ) {
@@ -77,7 +76,7 @@ fun BookWithProgress(
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .padding(top = paddingProgress),
+                    .padding(top = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 Spacer(

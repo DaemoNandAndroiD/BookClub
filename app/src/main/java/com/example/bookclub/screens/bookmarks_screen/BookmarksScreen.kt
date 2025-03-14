@@ -53,7 +53,7 @@ fun BookmarksScreen() {
         R.drawable.image,
         "Код да винчи",
         "Пролог",
-        percent = 0.15f
+        percent = 0.6f
     )
 
     val favoriteBooks = listOf(
@@ -121,7 +121,6 @@ fun BookmarksScreen() {
         item{
             BookWithProgress(
                 modifier = Modifier.height(screenHeight * 0.15f),
-                paddingProgress = ((screenHeight * 0.15f) * 0.126f),
                 continueReadingData = continueReadingData
             )
         }
