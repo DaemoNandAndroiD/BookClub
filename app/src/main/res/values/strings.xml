@@ -1,3 +1,19 @@
 <resources>
     <string name="app_name">BookClub</string>
+    <string name="small_title_welcome">ОТКРОЙ ДЛЯ СЕБЯ</string>
+    <string name="big_title_welcome">КНИЖНЫЙ\nМИР</string>
+    <string name="email_input_hint">Электронная почта</string>
+    <string name="password_input_hint">Пароль</string>
+    <string name="enter_button_title">Войти</string>
+    <string name="library_title">БИБЛИОТЕКА</string>
+    <string name="bookmarks_title">закладки</string>
+    <string name="new_small_title">НОВИНКИ</string>
+    <string name="popular_small_title">ПОПУЛЯРНЫЕ КНИГИ</string>
+    <string name="search_hint">Поиск по книгам</string>
+    <string name="recent_category">Недавние запросы</string>
+    <string name="genres_category">Жанры</string>
+    <string name="authors_category">Авторы</string>
+    <string name="read_now_category">Читаете сейчас</string>
+    <string name="favorite_books_category">Избранные книги</string>
+    <string name="quotes_category">Цитаты</string>
 </resources>
