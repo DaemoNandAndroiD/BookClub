@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -58,6 +59,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.bookclub.R
+import com.example.bookclub.screens.library_screen.utils.GridItemData
 import com.example.bookclub.screens.search_screen.components.CategoryTitle
 import com.example.bookclub.screens.search_screen.components.SearchItem
 import com.example.bookclub.screens.search_screen.components.SearchItemText
@@ -74,8 +76,23 @@ fun SearchScreen() {
 
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
+    val screenHeight = configuration.screenHeightDp.dp
 
     val recentTexts = remember { mutableStateListOf("iOS", "Android", "Тихий дэн") }
+
+    val searchResults = listOf(
+        GridItemData(R.drawable.image, "Код да винчи", "Дэн Браун"),
+        GridItemData(R.drawable.image, "Код да винчи", "Дэн Браун"),
+        GridItemData(R.drawable.image, "Код да винчи", "Дэн Браун"),
+        GridItemData(R.drawable.image, "Код да винчи", "Дэн Браун"),
+        GridItemData(R.drawable.image, "Код да винчи", "Дэн Браун"),
+        GridItemData(R.drawable.image, "Код да винчи", "Дэн Браун"),
+        GridItemData(R.drawable.image, "Код да винчи", "Дэн Браун"),
+        GridItemData(R.drawable.image, "Код да винчи", "Дэн Браун"),
+        GridItemData(R.drawable.image, "Код да винчи", "Дэн Браун"),
+        GridItemData(R.drawable.image, "Код да винчи", "Дэн Браун"),
+        GridItemData(R.drawable.image, "Код да винчи", "Дэн Браун"),
+    )
 
     val genresTexts = listOf(
         "Классика",
@@ -197,8 +214,8 @@ fun SearchScreen() {
                     .background(colorResource(R.color.background)),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                repeat(11) {
-                    SearchItem()
+                repeat(searchResults.size) {
+                    SearchItem(searchResults[it], Modifier.height(screenHeight * 0.15f))
                 }
             }
         }
