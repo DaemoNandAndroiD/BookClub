@@ -2,6 +2,7 @@ package com.example.bookclub.screens.welcome_screen.components
 
 import android.graphics.drawable.Drawable
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
@@ -20,6 +21,6 @@ fun BookImage(
         painterResource(drawable),
         contentDescription = null,
         contentScale = ContentScale.FillBounds,
-        modifier = Modifier.fillMaxHeight().width(150.dp)
+        modifier = Modifier.fillMaxHeight().aspectRatio(172f/270f)
     )
 }

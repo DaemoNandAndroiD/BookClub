@@ -78,7 +78,7 @@ fun CustomBottomNavigation(
                 }
             )
 
-            Spacer(Modifier.weight(5f))
+            Spacer(Modifier.weight(6f))
 
             CustomNavItem(
                 selectedNavigationIndex = selectedNavigationIndex.intValue,

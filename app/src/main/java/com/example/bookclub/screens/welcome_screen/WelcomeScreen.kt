@@ -7,7 +7,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -52,7 +55,9 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import java.util.UUID
 
 @Composable
-fun WelcomeScreen() {
+fun WelcomeScreen(
+    navigateToMain:()->Unit
+) {
     var emailInput by remember { mutableStateOf(TextFieldValue("")) }
     var passwordInput by remember { mutableStateOf(TextFieldValue("")) }
 
@@ -60,6 +65,7 @@ fun WelcomeScreen() {
         modifier = Modifier
             .fillMaxSize()
             .background(color = colorResource(R.color.accent_dark))
+            .statusBarsPadding()
     ) {
         AutoScrollingLazyRow(
             listOf(
@@ -74,7 +80,7 @@ fun WelcomeScreen() {
                 ListItem(res = R.drawable.image),
                 ListItem(res = R.drawable.image),
             ),
-            modifier = Modifier.fillMaxHeight(0.3f)
+            modifier = Modifier.padding(top = 48.dp).fillMaxHeight(0.3f)
         ){
             BookImage(it.res)
         }
@@ -82,12 +88,10 @@ fun WelcomeScreen() {
 
 
         Column(
-            verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.padding(
                 start = dimensionResource(R.dimen.small_startend_padding),
                 end = dimensionResource(R.dimen.small_startend_padding),
-                top = 48.dp,
-                bottom = 32.dp
+                top = 48.dp
             )
         ) {
             Text(
@@ -98,7 +102,7 @@ fun WelcomeScreen() {
                 color = Color.White
             )
             Text(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().offset(y = (-12).dp),
                 style = LocalTextStyle.current.merge(
                     TextStyle(
                         platformStyle = PlatformTextStyle(
@@ -144,8 +148,10 @@ fun WelcomeScreen() {
         TextButton(
             modifier = Modifier
                 .padding(
-                    horizontal = dimensionResource(R.dimen.small_startend_padding),
-                    vertical = dimensionResource(R.dimen.medium_vertical_padding)
+                    start = dimensionResource(R.dimen.small_startend_padding),
+                    end = dimensionResource(R.dimen.small_startend_padding),
+                    bottom = dimensionResource(R.dimen.medium_vertical_padding),
+                    top = dimensionResource(R.dimen.medium_vertical_padding),
                 )
                 .fillMaxWidth()
                 .background(
@@ -154,7 +160,9 @@ fun WelcomeScreen() {
                     else colorResource(R.color.white),
                     RoundedCornerShape(100.dp)
                 ),
-            onClick = {}
+            onClick = {
+                navigateToMain()
+            }
         ) {
             Text(
                 text = stringResource(R.string.enter_button_title),
@@ -172,5 +180,5 @@ fun WelcomeScreen() {
 @Preview
 @Composable
 fun Preview() {
-    WelcomeScreen()
+    WelcomeScreen({})
 }

@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -75,6 +77,7 @@ fun BookmarksScreen() {
             .fillMaxSize()
             .background(colorResource(R.color.background))
             .padding(horizontal = dimensionResource(R.dimen.small_startend_padding))
+            .statusBarsPadding()
     ) {
         item {
             Text(
@@ -153,6 +156,10 @@ fun BookmarksScreen() {
 
         items(quotes.size) {
             Quote(quotes[it], Modifier.fillMaxWidth().padding(top = 8.dp))
+        }
+
+        item {
+            Spacer(modifier = Modifier.height(128.dp))
         }
     }
 }

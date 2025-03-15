@@ -22,7 +22,9 @@ import com.example.bookclub.screens.search_screen.SearchScreen
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun MainScreen() {
+fun MainScreen(
+    logOutOnclick:()->Unit
+) {
     val navController = rememberNavController()
 
     Scaffold(
@@ -31,7 +33,7 @@ fun MainScreen() {
                 navigateToLibrary = {navController.navigate(Library)},
                 navigateToSearch = {navController.navigate(Search)},
                 navigateToBookmark = {navController.navigate(Bookmarks)},
-                navigateToLogout = {}
+                navigateToLogout = {logOutOnclick()}
             )},
         floatingActionButton = { BottomNavigationFab() },
         floatingActionButtonPosition = FabPosition.Center,
@@ -53,10 +55,4 @@ fun MainScreen() {
             graph = graph
         )
     }
-}
-
-@Preview
-@Composable
-fun previewW(){
-    MainScreen()
 }

@@ -12,6 +12,7 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.example.bookclub.screens.bottom_navigation_screen.MainScreen
+import com.example.bookclub.screens.navigation.AppNavHost
 import com.example.bookclub.ui.theme.BookClubTheme
 
 class MainActivity : ComponentActivity() {
@@ -27,7 +28,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             BookClubTheme {
-                MainScreen()
+                AppNavHost()
             }
         }
     }

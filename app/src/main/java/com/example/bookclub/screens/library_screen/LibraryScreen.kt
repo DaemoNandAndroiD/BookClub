@@ -14,11 +14,13 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
@@ -65,6 +67,7 @@ import com.google.android.material.carousel.HeroCarouselStrategy
 fun LibraryScreen() {
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
+    val screenHeight = configuration.screenHeightDp.dp
 
     val items = listOf<HorizontalCarouselData>(
         HorizontalCarouselData(
@@ -124,6 +127,8 @@ fun LibraryScreen() {
         modifier = Modifier
             .fillMaxSize()
             .background(colorResource(R.color.background))
+            .padding(horizontal = dimensionResource(R.dimen.small_startend_padding))
+            .statusBarsPadding()
     ) {
         item{
             Text(
@@ -131,7 +136,6 @@ fun LibraryScreen() {
                     .fillMaxWidth()
                     .background(colorResource(R.color.background))
                     .padding(
-                        start = dimensionResource(R.dimen.small_startend_padding),
                         top = dimensionResource(R.dimen.medium_vertical_padding)
                     ),
                 text = stringResource(R.string.library_title),
@@ -143,54 +147,50 @@ fun LibraryScreen() {
         }
 
         item{
-            Column(
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        start = dimensionResource(R.dimen.small_startend_padding),
-                        end = dimensionResource(R.dimen.small_startend_padding),
-                        top = dimensionResource(R.dimen.medium_vertical_padding)
-                    )
-            ) {
-                Text(
-                    text = stringResource(R.string.new_small_title),
-                    fontSize = 24.sp,
-                    fontFamily = alumniSansFontFamily,
-                    fontWeight = FontWeight.Bold,
-                    color = colorResource(R.color.accent_dark)
-                )
+            Text(
+                modifier = Modifier.padding(top = 24.dp, bottom = dimensionResource(R.dimen.small_startend_padding)),
+                text = stringResource(R.string.new_small_title),
+                fontSize = 24.sp,
+                fontFamily = alumniSansFontFamily,
+                fontWeight = FontWeight.Bold,
+                color = colorResource(R.color.accent_dark)
+            )
+        }
 
-                AndroidView(
-                    factory = {
-                        val view =
-                            LayoutInflater.from(it).inflate(R.layout.hero_carousel, null, false)
-                        val recyclerView = view.findViewById<RecyclerView>(R.id.carousel)
+        item{
+            AndroidView(
+                modifier = Modifier.height(screenHeight*0.286f),
+                factory = {
+                    val view =
+                        LayoutInflater.from(it).inflate(R.layout.hero_carousel, null, false)
+                    val recyclerView = view.findViewById<RecyclerView>(R.id.carousel)
 
-                        val manager = CarouselLayoutManager(HeroCarouselStrategy())
-                        manager.carouselAlignment = CarouselLayoutManager.ALIGNMENT_CENTER
-                        recyclerView.layoutManager = manager
-                        val snapHelper = CarouselSnapHelper()
-                        snapHelper.attachToRecyclerView(recyclerView)
-                        recyclerView.adapter = CarouselAdapter(items)
+                    val manager = CarouselLayoutManager(HeroCarouselStrategy())
+                    manager.carouselAlignment = CarouselLayoutManager.ALIGNMENT_CENTER
+                    recyclerView.layoutManager = manager
+                    val snapHelper = CarouselSnapHelper()
+                    snapHelper.attachToRecyclerView(recyclerView)
+                    recyclerView.adapter = CarouselAdapter(items)
 
-                        recyclerView
-                    }
-                )
+                    recyclerView
+                }
+            )
+        }
 
-                Text(
-                    text = stringResource(R.string.popular_small_title),
-                    fontSize = 24.sp,
-                    fontFamily = alumniSansFontFamily,
-                    fontWeight = FontWeight.Bold,
-                    color = colorResource(R.color.accent_dark)
-                )
-            }
+        item{
+            Text(
+                modifier = Modifier.padding(top = 24.dp),
+                text = stringResource(R.string.popular_small_title),
+                fontSize = 24.sp,
+                fontFamily = alumniSansFontFamily,
+                fontWeight = FontWeight.Bold,
+                color = colorResource(R.color.accent_dark)
+            )
         }
 
         items((itemsGrid.size/3).toInt()){
             FlowRow(
-                modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp),
+                modifier = Modifier.padding(top = 16.dp),
                 maxItemsInEachRow = 3,
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
@@ -198,6 +198,10 @@ fun LibraryScreen() {
                 GridItem(itemsGrid[it*3+1], modifier = Modifier.width((screenWidth-64.dp)/3))
                 GridItem(itemsGrid[it*3+2], modifier = Modifier.width((screenWidth-64.dp)/3))
             }
+        }
+
+        item {
+            Spacer(modifier = Modifier.height(128.dp))
         }
     }
 }
