@@ -55,7 +55,7 @@ fun BookmarksScreen() {
         R.drawable.image,
         "Код да винчи",
         "Пролог",
-        percent = 0.6f
+        percent = 60f
     )
 
     val favoriteBooks = listOf(

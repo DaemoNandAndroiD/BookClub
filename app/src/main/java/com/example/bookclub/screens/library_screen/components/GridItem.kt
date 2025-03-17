@@ -1,6 +1,7 @@
 package com.example.bookclub.screens.library_screen.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
@@ -25,6 +26,7 @@ import java.util.Locale
 @Composable
 fun GridItem(
     gridItemData: GridItemData,
+    onClick:()->Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -36,6 +38,7 @@ fun GridItem(
             contentScale = ContentScale.FillBounds,
             modifier = modifier
                 .aspectRatio(116f/182f)
+                .clickable(onClick = onClick)
         )
 
         Column(
@@ -57,10 +60,4 @@ fun GridItem(
             )
         }
     }
-}
-
-@Preview
-@Composable
-fun fsdfasfas() {
-    GridItem(GridItemData(R.drawable.image, title = "Код да винчи", author = "Дэн Браун"))
 }

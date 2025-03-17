@@ -73,35 +73,7 @@ fun BookWithProgress(
                 )
             }
 
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                Spacer(
-                    Modifier
-                        .height(4.dp)
-                        .fillMaxWidth(continueReadingData.percent)
-                        .background(color = colorResource(R.color.accent_dark), CircleShape)
-                )
-                Box(
-                    Modifier
-                        .height(4.dp)
-                        .fillMaxWidth()
-                        .weight(1f)
-                        .background(color = colorResource(R.color.accent_medium), CircleShape)
-                ) {
-                    Spacer(
-                        modifier = Modifier
-                            .height(4.dp)
-                            .width(4.dp)
-                            .align(Alignment.CenterEnd)
-                            .background(color = colorResource(R.color.accent_dark), CircleShape)
-                    )
-                }
-            }
-
+            BookProgress(continueReadingData.percent, modifier = Modifier.padding(top = 16.dp))
         }
     }
 }

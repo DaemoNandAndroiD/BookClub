@@ -15,9 +15,11 @@ import androidx.compose.ui.unit.dp
 import com.example.bookclub.R
 
 @Composable
-fun BottomNavigationFab() {
+fun BottomNavigationFab(
+    onClick:()->Unit
+) {
     FloatingActionButton(
-        onClick = {},
+        onClick = onClick,
         containerColor = colorResource(R.color.red_secondary),
         shape = CircleShape,
         modifier = Modifier.size(80.dp).offset(y = 88.dp)

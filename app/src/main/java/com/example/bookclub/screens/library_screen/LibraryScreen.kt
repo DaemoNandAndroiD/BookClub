@@ -64,7 +64,9 @@ import com.google.android.material.carousel.HeroCarouselStrategy
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalLayoutApi::class)
 @Composable
-fun LibraryScreen() {
+fun LibraryScreen(
+    onItemClick:()->Unit
+) {
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
     val screenHeight = configuration.screenHeightDp.dp
@@ -130,7 +132,7 @@ fun LibraryScreen() {
             .padding(horizontal = dimensionResource(R.dimen.small_startend_padding))
             .statusBarsPadding()
     ) {
-        item{
+        item {
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -146,9 +148,12 @@ fun LibraryScreen() {
             )
         }
 
-        item{
+        item {
             Text(
-                modifier = Modifier.padding(top = 24.dp, bottom = dimensionResource(R.dimen.small_startend_padding)),
+                modifier = Modifier.padding(
+                    top = 24.dp,
+                    bottom = dimensionResource(R.dimen.small_startend_padding)
+                ),
                 text = stringResource(R.string.new_small_title),
                 fontSize = 24.sp,
                 fontFamily = alumniSansFontFamily,
@@ -157,9 +162,9 @@ fun LibraryScreen() {
             )
         }
 
-        item{
+        item {
             AndroidView(
-                modifier = Modifier.height(screenHeight*0.286f),
+                modifier = Modifier.height(screenHeight * 0.286f),
                 factory = {
                     val view =
                         LayoutInflater.from(it).inflate(R.layout.hero_carousel, null, false)
@@ -177,7 +182,7 @@ fun LibraryScreen() {
             )
         }
 
-        item{
+        item {
             Text(
                 modifier = Modifier.padding(top = 24.dp),
                 text = stringResource(R.string.popular_small_title),
@@ -188,15 +193,28 @@ fun LibraryScreen() {
             )
         }
 
-        items((itemsGrid.size/3).toInt()){
+        items((itemsGrid.size / 3).toInt()) {
             FlowRow(
                 modifier = Modifier.padding(top = 16.dp),
                 maxItemsInEachRow = 3,
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                GridItem(itemsGrid[it*3], modifier = Modifier.width((screenWidth-64.dp)/3))
-                GridItem(itemsGrid[it*3+1], modifier = Modifier.width((screenWidth-64.dp)/3))
-                GridItem(itemsGrid[it*3+2], modifier = Modifier.width((screenWidth-64.dp)/3))
+                GridItem(
+                    itemsGrid[it * 3],
+                    modifier = Modifier.width((screenWidth - 64.dp) / 3),
+                    onClick = onItemClick
+                )
+
+                GridItem(
+                    itemsGrid[it * 3 + 1],
+                    modifier = Modifier.width((screenWidth - 64.dp) / 3),
+                    onClick = onItemClick
+                )
+                GridItem(
+                    itemsGrid[it * 3 + 2],
+                    modifier = Modifier.width((screenWidth - 64.dp) / 3),
+                    onClick = onItemClick
+                )
             }
         }
 
@@ -209,5 +227,5 @@ fun LibraryScreen() {
 @Preview
 @Composable
 fun adadad() {
-    LibraryScreen()
+    LibraryScreen({})
 }
