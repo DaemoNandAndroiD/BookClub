@@ -164,7 +164,7 @@ fun SearchScreen() {
                         cursorColor = colorResource(R.color.red_secondary),
                         focusedTextColor = colorResource(R.color.accent_dark),
                         unfocusedTextColor = colorResource(R.color.accent_dark),
-                        focusedContainerColor = colorResource(R.color.background)
+                        focusedContainerColor = colorResource(R.color.background),
                     ),
 
                     leadingIcon = {

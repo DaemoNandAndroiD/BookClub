@@ -63,7 +63,7 @@ fun MaterialSlider(
             onValueChange(it)
             sliderPosition = it
         },
-        steps = 0,
+        steps = 11,
         modifier = modifier,
         interactionSource = interactionSource,
         colors = colors,
@@ -96,24 +96,4 @@ fun MaterialSlider(
             }
         }
     )
-
-}
-
-@Preview
-@Composable
-fun SliderSample() {
-    val colors = SliderDefaults.colors(
-        thumbColor = colorResource(R.color.accent_dark),
-        disabledActiveTrackColor = colorResource(R.color.accent_dark),
-    )
-    var sliderPosition by remember { mutableStateOf(0f) }
-    Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-        Text(text = "%.2f".format(sliderPosition))
-        Slider(
-            modifier = Modifier.semantics { contentDescription = "Localized Description" },
-            value = sliderPosition,
-            onValueChange = { sliderPosition = it },
-            colors = colors
-        )
-    }
 }

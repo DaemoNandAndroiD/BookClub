@@ -28,6 +28,7 @@ fun IconTextButton(
     containerColor:Int,
     textContent:String,
     textIcon:Int,
+    onClick:()->Unit,
     modifier: Modifier = Modifier
 ){
     val text = buildAnnotatedString {
@@ -57,7 +58,7 @@ fun IconTextButton(
 
     TextButton(
         modifier = modifier.background(colorResource(containerColor), CircleShape),
-        onClick = {},
+        onClick = onClick,
     ) {
         Text(
             text = text,

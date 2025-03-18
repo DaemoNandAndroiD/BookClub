@@ -18,10 +18,14 @@ fun AppNavHost() {
         startDestination = Welcome
     ) {
         composable<Welcome> {
-            WelcomeScreen { navController.navigate(Main) }
+            WelcomeScreen { navController.navigate(Main){
+                popUpTo<Welcome>{ inclusive = true}
+            } }
         }
         composable<Main> {
-            MainScreen { navController.navigate(Welcome) }
+            MainScreen { navController.navigate(Welcome){
+                popUpTo(0){ inclusive = true}
+            } }
         }
     }
 }

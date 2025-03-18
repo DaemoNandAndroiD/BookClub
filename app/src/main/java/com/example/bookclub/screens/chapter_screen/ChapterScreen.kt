@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
@@ -29,6 +30,7 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -40,6 +42,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalTextToolbar
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -59,9 +63,10 @@ import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChapterScreen(){
+fun ChapterScreen(
+    navigateBack:()->Unit
+){
     val configuration = LocalConfiguration.current
-    val screenHeight = configuration.screenHeightDp.dp
     val screenWidth = configuration.screenWidthDp.dp
 
     var fontSizeSliderPosition by remember { mutableFloatStateOf(14f) }
@@ -70,7 +75,6 @@ fun ChapterScreen(){
     var bottomSheetVisibility by remember { mutableStateOf(false) }
 
     var sideSheetVisibility by remember { mutableStateOf(false) }
-
 
     Box(
         modifier = Modifier.fillMaxSize().background(colorResource(R.color.background))
@@ -109,7 +113,7 @@ fun ChapterScreen(){
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
                             .background(colorResource(R.color.accent_dark), CircleShape),
-                        onClick = {}
+                        onClick = navigateBack
                     ) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
@@ -169,13 +173,15 @@ fun ChapterScreen(){
                 ){
                     LazyColumn{
                         item{
-                            Text(
-                                text = stringResource(R.string.test_text),
-                                fontFamily = velaSansFontFamily,
-                                fontWeight = FontWeight.Normal,
-                                fontSize = fontSizeSliderPosition.sp,
-                                color = colorResource(R.color.black)
-                            )
+                            SelectionContainer {
+                                Text(
+                                    text = stringResource(R.string.test_text),
+                                    fontFamily = velaSansFontFamily,
+                                    fontWeight = FontWeight.Normal,
+                                    fontSize = fontSizeSliderPosition.sp,
+                                    color = colorResource(R.color.black)
+                                )
+                            }
                         }
                     }
 
@@ -311,11 +317,4 @@ fun ChapterScreen(){
             )
         }
     }
-}
-
-
-@Preview
-@Composable
-fun ChapterScreenPreview(){
-    ChapterScreen()
 }

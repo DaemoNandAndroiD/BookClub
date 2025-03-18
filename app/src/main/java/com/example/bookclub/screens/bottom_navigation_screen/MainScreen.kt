@@ -8,13 +8,18 @@ import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavOptions
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.createGraph
+import androidx.navigation.toRoute
 import com.example.bookclub.screens.book_details_screen.BookDetails
 import com.example.bookclub.screens.book_details_screen.BookDetailsScreen
 import com.example.bookclub.screens.bookmarks_screen.Bookmarks
@@ -34,40 +39,61 @@ fun MainScreen(
 ) {
     val navController = rememberNavController()
 
+    var bottomBarVisibility by remember { mutableStateOf(true) }
+
     Scaffold(
         bottomBar = {
-            CustomBottomNavigation(
-                navigateToLibrary = {navController.navigate(Library)},
-                navigateToSearch = {navController.navigate(Search)},
-                navigateToBookmark = {navController.navigate(Bookmarks)},
-                navigateToLogout = {logOutOnclick()}
-            )},
+            if(bottomBarVisibility){
+                CustomBottomNavigation(
+                    navigateToLibrary = {navController.navigate(Library)},
+                    navigateToSearch = {navController.navigate(Search)},
+                    navigateToBookmark = {navController.navigate(Bookmarks)},
+                    navigateToLogout = {logOutOnclick()}
+                )
+            }},
 
-        floatingActionButton = { BottomNavigationFab{
-            navController.navigate(Chapter)
-        }},
+        floatingActionButton = {
+            if(bottomBarVisibility){
+                BottomNavigationFab{
+                    navController.navigate(Chapter)
+                }
+            } },
 
         floatingActionButtonPosition = FabPosition.Center,
     ) {
         val graph = navController.createGraph(startDestination = Library) {
             composable<Library> {
+                bottomBarVisibility = true
                 LibraryScreen{
                     navController.navigate(BookDetails)
                 }
             }
             composable<Search> {
+                bottomBarVisibility = true
                 SearchScreen()
             }
             composable<Bookmarks> {
+                bottomBarVisibility = true
                 BookmarksScreen()
             }
 
             composable<BookDetails> {
-                BookDetailsScreen()
+                bottomBarVisibility = false
+                BookDetailsScreen(
+                    navigateBack = {
+                        navController.popBackStack()
+                    },
+                    onRead = {
+                        navController.navigate(Chapter)
+                    }
+                )
             }
 
             composable<Chapter> {
-                ChapterScreen()
+                bottomBarVisibility = false
+                ChapterScreen{
+                    navController.popBackStack()
+                }
             }
         }
 

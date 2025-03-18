@@ -1,5 +1,6 @@
 package com.example.bookclub.screens.book_details_screen.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,10 +26,11 @@ import com.example.bookclub.ui.theme.velaSansFontFamily
 @Composable
 fun ChapterItem(
     modifier: Modifier = Modifier,
-    chapterData: ChapterData
+    chapterData: ChapterData,
+    onClick:()->Unit
 ){
     Row(
-        modifier = modifier.fillMaxWidth()
+        modifier = if(!chapterData.isActive) modifier.fillMaxWidth() else modifier.fillMaxWidth().clickable { onClick() }
     ) {
         Text(
             modifier = Modifier
@@ -61,10 +63,4 @@ fun ChapterItem(
             )
         }
     }
-}
-
-@Preview
-@Composable
-fun dfsad(){
-    ChapterItem(chapterData = ChapterData("Факты", false, true))
 }
