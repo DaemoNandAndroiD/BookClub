@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -50,12 +51,13 @@ import com.example.bookclub.screens.book_details_screen.utils.bookDetailsData
 import com.example.bookclub.screens.bookmarks_screen.components.BookProgress
 import com.example.bookclub.ui.theme.alumniSansFontFamily
 import com.example.bookclub.ui.theme.velaSansFontFamily
+import com.example.bookclub.utils.parseParagraph
 import java.util.Locale
 
 @Composable
 fun BookDetailsScreen(
-    navigateBack: ()->Unit,
-    onRead:()->Unit
+    navigateBack: () -> Unit,
+    onRead: () -> Unit
 ) {
     var favoriteState by remember { mutableStateOf(false) }
 
@@ -132,8 +134,10 @@ fun BookDetailsScreen(
                 IconTextButton(
                     contentColor = R.color.accent_dark,
                     containerColor = R.color.accent_light,
-                    textContent = if(!favoriteState) stringResource(R.string.bookmark_button_false) else stringResource(R.string.bookmark_button_true),
-                    textIcon = if(!favoriteState) R.drawable.ic_bookmarks else R.drawable.ic_done,
+                    textContent = if (!favoriteState) stringResource(R.string.bookmark_button_false) else stringResource(
+                        R.string.bookmark_button_true
+                    ),
+                    textIcon = if (!favoriteState) R.drawable.ic_bookmarks else R.drawable.ic_done,
                     modifier = Modifier.fillMaxWidth(),
                     onClick = {
                         favoriteState = !favoriteState
@@ -168,14 +172,18 @@ fun BookDetailsScreen(
             )
         }
 
-        item {
+        itemsIndexed(bookDetailsData.description) { index, line ->
             Text(
+                text = line,
                 modifier = Modifier
                     .padding(
-                        horizontal = dimensionResource(R.dimen.small_startend_padding),
-                        vertical = dimensionResource(R.dimen.medium_vertical_padding)
+                        start = dimensionResource(R.dimen.small_startend_padding),
+                        end = dimensionResource(R.dimen.small_startend_padding),
+                        top = if (index == 0) dimensionResource(R.dimen.medium_vertical_padding) else 8.dp,
+                        bottom = if (index == bookDetailsData.description.lastIndex) dimensionResource(
+                            R.dimen.medium_vertical_padding
+                        ) else 0.dp
                     ),
-                text = bookDetailsData.description,
                 fontSize = 16.sp,
                 fontFamily = velaSansFontFamily,
                 fontWeight = FontWeight.Normal,
@@ -183,27 +191,29 @@ fun BookDetailsScreen(
             )
         }
 
-        item {
-            Text(
-                modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.small_startend_padding)),
-                text = stringResource(R.string.progress_section_title).uppercase(Locale.getDefault()),
-                fontSize = 24.sp,
-                fontFamily = alumniSansFontFamily,
-                fontWeight = FontWeight.Bold,
-                color = colorResource(R.color.accent_dark)
-            )
-        }
-
-        item {
-            BookProgress(
-                bookDetailsData.percent,
-                modifier = Modifier.padding(
-                    top = 12.dp,
-                    bottom = 20.dp,
-                    start = dimensionResource(R.dimen.small_startend_padding),
-                    end = dimensionResource(R.dimen.small_startend_padding),
+        if(bookDetailsData.chapters.find { it.isDone } != null){
+            item {
+                Text(
+                    modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.small_startend_padding)),
+                    text = stringResource(R.string.progress_section_title).uppercase(Locale.getDefault()),
+                    fontSize = 24.sp,
+                    fontFamily = alumniSansFontFamily,
+                    fontWeight = FontWeight.Bold,
+                    color = colorResource(R.color.accent_dark)
                 )
-            )
+            }
+
+            item{
+                BookProgress(
+                    bookDetailsData.percent,
+                    modifier = Modifier.padding(
+                        top = 12.dp,
+                        bottom = 20.dp,
+                        start = dimensionResource(R.dimen.small_startend_padding),
+                        end = dimensionResource(R.dimen.small_startend_padding),
+                    )
+                )
+            }
         }
 
         item {
@@ -232,4 +242,10 @@ fun BookDetailsScreen(
             Spacer(modifier = Modifier.height(24.dp))
         }
     }
+}
+
+@Preview
+@Composable
+fun qweq() {
+    BookDetailsScreen({}) { }
 }

@@ -11,7 +11,7 @@ private val boldAlumniSans = Font(R.font.alumnisans_bold, FontWeight.Bold)
 private val boldVelaSans = Font(R.font.velasans_bold, FontWeight.Bold)
 private val normalVelaSans = Font(R.font.velasans_regular, FontWeight.Normal)
 
-private val georgiaNormal = Font(R.font.georgia_regular, FontWeight.Normal)
+private val georgiaNormal = Font(R.font.georgia_regular, FontWeight.Normal, FontStyle.Normal)
 private val georgiaItalic = Font(R.font.georgiai,FontWeight.Normal, FontStyle.Italic)
 
 val alumniSansFontFamily = FontFamily(boldAlumniSans)

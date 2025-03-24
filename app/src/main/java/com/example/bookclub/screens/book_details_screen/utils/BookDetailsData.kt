@@ -2,20 +2,19 @@ package com.example.bookclub.screens.book_details_screen.utils
 
 import androidx.annotation.DrawableRes
 import com.example.bookclub.R
+import com.example.bookclub.utils.parseParagraph
 
 data class BookDetailsData(
     @DrawableRes val imageBackground:Int,
     val isFavorite:Boolean,
     val title:String,
     val author:String,
-    val description:String,
+    val description:List<String>,
     val percent:Float,
     val chapters:List<ChapterData>
 )
 
-val description = "Секретный код скрыт в работах Леонардо да Винчи...\n" +
-        "Только он поможет найти христианские святыни, дающие немыслимые власть и могущество... \n" +
-        "Ключ к величайшей тайне, над которой человечество билось веками, наконец может быть найден..."
+val description = "Секретный код скрыт в работах Леонардо да Винчи...\nТолько он поможет найти христианские святыни, дающие немыслимые власть имогущество... \nКлюч к величайшей тайне, над которой человечество билось веками, наконец может быть найден..."
 
 val chapters = listOf(
     ChapterData("Факты", true, false),
@@ -39,7 +38,7 @@ val bookDetailsData = BookDetailsData(
     isFavorite = false,
     title = "Код да винчи",
     author = "Дэн Браун",
-    description = description,
+    description = description.parseParagraph(),
     percent = 20f,
     chapters = chapters
 )

@@ -28,10 +28,14 @@ import com.example.bookclub.R
 @Composable
 fun ChapterBottomAppBar(
     onSettingsClick:()->Unit,
-    onMenuClick:()->Unit
+    onMenuClick:()->Unit,
+    onPreviousClick:()->Unit,
+    onNextClick:()->Unit,
+    onFabClick:()->Unit,
+    isPreviousEnabled:Boolean,
+    isNextEnabled:Boolean,
+    fabState:Boolean
 ){
-
-    var fabState by remember { mutableStateOf(false) }
 
     BottomAppBar(
         containerColor = colorResource(R.color.accent_dark),
@@ -42,12 +46,13 @@ fun ChapterBottomAppBar(
             modifier = Modifier.fillMaxHeight().padding(start = 16.dp).offset(y = -2.dp),
         ) {
             IconButton(
-                onClick = {}
+                onClick = onPreviousClick,
+                enabled = isPreviousEnabled
             ) {
                 Icon(
                     ImageVector.vectorResource(R.drawable.ic_chapter_back),
                     contentDescription = null,
-                    tint = colorResource(R.color.white)
+                    tint = if(isPreviousEnabled) colorResource(R.color.white) else colorResource(R.color.accent_medium)
                 )
             }
 
@@ -62,12 +67,13 @@ fun ChapterBottomAppBar(
             }
 
             IconButton(
-                onClick = {}
+                onClick = onNextClick,
+                enabled = isNextEnabled
             ) {
                 Icon(
                     ImageVector.vectorResource(R.drawable.ic_chapter_next),
                     contentDescription = null,
-                    tint = colorResource(R.color.white)
+                    tint = if(isNextEnabled) colorResource(R.color.white) else colorResource(R.color.accent_medium)
                 )
             }
 
@@ -85,9 +91,7 @@ fun ChapterBottomAppBar(
 
             FloatingActionButton(
                 modifier = Modifier.padding(end = 16.dp),
-                onClick = {
-                    fabState = !fabState
-                },
+                onClick = onFabClick,
                 containerColor = colorResource(R.color.accent_light)
             ) {
                 if(!fabState){
@@ -105,7 +109,6 @@ fun ChapterBottomAppBar(
                         tint = colorResource(R.color.accent_dark)
                     )
                 }
-
             }
         }
     }

@@ -1,11 +1,13 @@
 package com.example.bookclub.screens.search_screen.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,10 +29,11 @@ import java.util.Locale
 @Composable
 fun SearchItem(
     gridItemData: GridItemData,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick:()->Unit
 ){
     Row(
-        modifier = modifier,
+        modifier = modifier.fillMaxWidth().clickable { onClick() },
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Image(

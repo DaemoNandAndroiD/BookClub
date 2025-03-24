@@ -55,7 +55,7 @@ fun MainScreen(
         floatingActionButton = {
             if(bottomBarVisibility){
                 BottomNavigationFab{
-                    navController.navigate(Chapter)
+                    navController.navigate(Chapter())
                 }
             } },
 
@@ -70,11 +70,20 @@ fun MainScreen(
             }
             composable<Search> {
                 bottomBarVisibility = true
-                SearchScreen()
+                SearchScreen{
+                    navController.navigate(BookDetails)
+                }
             }
             composable<Bookmarks> {
                 bottomBarVisibility = true
-                BookmarksScreen()
+                BookmarksScreen(
+                    onChapterNavigate = {index->
+                        navController.navigate(Chapter(index))
+                    },
+                    onBookDetailsNavigate = {
+                        navController.navigate(BookDetails)
+                    }
+                )
             }
 
             composable<BookDetails> {
@@ -84,14 +93,16 @@ fun MainScreen(
                         navController.popBackStack()
                     },
                     onRead = {
-                        navController.navigate(Chapter)
+                        navController.navigate(Chapter())
                     }
                 )
             }
 
             composable<Chapter> {
                 bottomBarVisibility = false
-                ChapterScreen{
+                ChapterScreen(
+                    launchChapterIndex = it.arguments?.getInt("chapterIndex") ?: 0
+                ){
                     navController.popBackStack()
                 }
             }

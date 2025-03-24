@@ -75,7 +75,9 @@ import kotlin.math.exp
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
-fun SearchScreen() {
+fun SearchScreen(
+    onBookDetailsNavigate:()->Unit
+) {
     var textFieldState by remember { mutableStateOf("") }
     var expanded by rememberSaveable { mutableStateOf(false) }
 
@@ -221,7 +223,7 @@ fun SearchScreen() {
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 repeat(searchResults.size) {
-                    SearchItem(searchResults[it], Modifier.height(screenHeight * 0.14f))
+                    SearchItem(searchResults[it], Modifier.height(screenHeight * 0.14f), onBookDetailsNavigate)
                 }
 
                 Spacer(modifier = Modifier.height(128.dp))
@@ -372,5 +374,5 @@ fun SearchScreen() {
 @Preview
 @Composable
 fun qerqq() {
-    SearchScreen()
+    SearchScreen{}
 }

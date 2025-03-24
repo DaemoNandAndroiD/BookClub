@@ -5,6 +5,7 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
@@ -61,7 +62,8 @@ fun SideSheet(
     sideSheetWidth: Dp,
     isDrawerOpen: Boolean,
     content: List<ChapterData>,
-    onDismiss:()->Unit
+    onDismiss:()->Unit,
+    onItemClick:(Int)->Unit
 ){
     var localVisibility by remember { mutableStateOf(isDrawerOpen) }
 
@@ -152,7 +154,7 @@ fun SideSheet(
 
             items(content.size){
                 Text(
-                    modifier = Modifier.padding(vertical = 14.dp, horizontal = 16.dp),
+                    modifier = Modifier.padding(vertical = 14.dp, horizontal = 16.dp).clickable { onItemClick(it) },
                     text = content[it].title,
                     fontFamily = velaSansFontFamily,
                     color = colorResource(R.color.accent_dark),
