@@ -4,9 +4,12 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -31,6 +34,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -56,53 +60,63 @@ import java.util.UUID
 
 @Composable
 fun WelcomeScreen(
-    navigateToMain:()->Unit
+    navigateToMain: () -> Unit
 ) {
     var emailInput by remember { mutableStateOf(TextFieldValue("")) }
     var passwordInput by remember { mutableStateOf(TextFieldValue("")) }
+    val lazyListState = rememberLazyListState()
+
+    val isVisible by remember { derivedStateOf { lazyListState.layoutInfo.visibleItemsInfo.size <=5 } }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(color = colorResource(R.color.accent_dark))
             .statusBarsPadding()
+            .systemBarsPadding(),
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
-        AutoScrollingLazyRow(
-            listOf(
-                ListItem(res = R.drawable.image),
-                ListItem(res = R.drawable.image),
-                ListItem(res = R.drawable.image),
-                ListItem(res = R.drawable.image),
-                ListItem(res = R.drawable.image),
-                ListItem(res = R.drawable.image),
-                ListItem(res = R.drawable.image),
-                ListItem(res = R.drawable.image),
-                ListItem(res = R.drawable.image),
-                ListItem(res = R.drawable.image),
-            ),
-            modifier = Modifier.padding(top = 48.dp).fillMaxHeight(0.3f)
-        ){
-            BookImage(it.res)
+        if(isVisible){
+            AutoScrollingLazyRow(
+                listOf(
+                    ListItem(res = R.drawable.image),
+                    ListItem(res = R.drawable.image_3),
+                    ListItem(res = R.drawable.image_4),
+
+                ),
+                modifier = Modifier
+                    .padding(top = 48.dp)
+                    .weight(1f, fill = false),
+                lazyListState = lazyListState,
+                itemContent = {
+                    BookImage(it)
+                }
+            )
         }
 
-
-
         Column(
-            modifier = Modifier.padding(
-                start = dimensionResource(R.dimen.small_startend_padding),
-                end = dimensionResource(R.dimen.small_startend_padding),
-                top = 48.dp
-            )
+            modifier = Modifier
+                .padding(
+                    start = dimensionResource(R.dimen.small_startend_padding),
+                    end = dimensionResource(R.dimen.small_startend_padding),
+                    top = 48.dp
+                )
+                .height(IntrinsicSize.Max)
         ) {
             Text(
                 text = stringResource(R.string.small_title_welcome),
                 fontSize = 48.sp,
                 fontFamily = alumniSansFontFamily,
                 fontWeight = FontWeight.Bold,
-                color = Color.White
+                color = Color.White,
+                modifier = Modifier.testTag("small_header")
             )
             Text(
-                modifier = Modifier.fillMaxWidth().offset(y = (-12).dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .offset(y = (-12).dp)
+                    .testTag("big_header")
+                ,
                 style = LocalTextStyle.current.merge(
                     TextStyle(
                         platformStyle = PlatformTextStyle(
@@ -126,7 +140,10 @@ fun WelcomeScreen(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = dimensionResource(R.dimen.small_startend_padding)),
+                .padding(
+                    start = dimensionResource(R.dimen.small_startend_padding),
+                    end = dimensionResource(R.dimen.small_startend_padding),
+                ),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             InputField(
@@ -143,36 +160,36 @@ fun WelcomeScreen(
                 onValueChanged = { passwordInput = it },
                 textHint = stringResource(R.string.password_input_hint),
             )
-        }
 
-        TextButton(
-            modifier = Modifier
-                .padding(
-                    start = dimensionResource(R.dimen.small_startend_padding),
-                    end = dimensionResource(R.dimen.small_startend_padding),
-                    bottom = dimensionResource(R.dimen.medium_vertical_padding),
-                    top = dimensionResource(R.dimen.medium_vertical_padding),
+            TextButton(
+                modifier = Modifier
+                    .padding(
+                        bottom = dimensionResource(R.dimen.medium_vertical_padding),
+                        top = dimensionResource(R.dimen.small_startend_padding),
+                    )
+                    .testTag(stringResource(R.string.test_tag_button_enter))
+                    .fillMaxWidth()
+                    .background(
+                        if (emailInput.text.isEmpty() || passwordInput.text.isEmpty())
+                            colorResource(R.color.accent_medium)
+                        else colorResource(R.color.white),
+                        RoundedCornerShape(100.dp)
+                    ),
+                onClick = {
+                    navigateToMain()
+                }
+            ) {
+                Text(
+                    modifier = Modifier.testTag(stringResource(R.string.enter_button_title)),
+                    text = stringResource(R.string.enter_button_title),
+                    fontFamily = velaSansFontFamily,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 14.sp,
+                    color = if (emailInput.text.isEmpty() || passwordInput.text.isEmpty())
+                        colorResource(R.color.accent_light)
+                    else colorResource(R.color.accent_dark)
                 )
-                .fillMaxWidth()
-                .background(
-                    if (emailInput.text.isEmpty() || passwordInput.text.isEmpty())
-                        colorResource(R.color.accent_medium)
-                    else colorResource(R.color.white),
-                    RoundedCornerShape(100.dp)
-                ),
-            onClick = {
-                navigateToMain()
             }
-        ) {
-            Text(
-                text = stringResource(R.string.enter_button_title),
-                fontFamily = velaSansFontFamily,
-                fontWeight = FontWeight.Bold,
-                fontSize = 14.sp,
-                color = if (emailInput.text.isEmpty() || passwordInput.text.isEmpty())
-                    colorResource(R.color.accent_light)
-                else colorResource(R.color.accent_dark)
-            )
         }
     }
 }

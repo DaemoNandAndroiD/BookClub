@@ -27,6 +27,7 @@ val chapters = listOf(
     ChapterData("Глава 6", false, false),
     ChapterData("Глава 7", false, false),
     ChapterData("Глава 8", false, false),
+    ChapterData("Глава 9", false, false),
     ChapterData("Глава 10", false, false),
     ChapterData("Глава 11", false, false),
     ChapterData("Глава 12", false, false),

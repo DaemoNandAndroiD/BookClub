@@ -5,6 +5,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -76,7 +77,8 @@ import kotlin.math.exp
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun SearchScreen(
-    onBookDetailsNavigate:()->Unit
+    onBookDetailsNavigate: () -> Unit,
+    onHideNavBar: () -> Unit
 ) {
     var textFieldState by remember { mutableStateOf("") }
     var expanded by rememberSaveable { mutableStateOf(false) }
@@ -151,7 +153,10 @@ fun SearchScreen(
                     onQueryChange = { textFieldState = it },
                     onSearch = { expanded = false },
                     expanded = expanded,
-                    onExpandedChange = { expanded = it },
+                    onExpandedChange = {
+                        expanded = it
+                        onHideNavBar()
+                    },
                     placeholder = {
                         Text(
                             stringResource(R.string.search_hint),
@@ -180,6 +185,7 @@ fun SearchScreen(
                             IconButton(
                                 onClick = {
                                     expanded = false
+                                    onHideNavBar()
                                 }
                             ) {
                                 Icon(
@@ -208,25 +214,32 @@ fun SearchScreen(
                 )
             },
             expanded = expanded,
-            onExpandedChange = { expanded = it },
+            onExpandedChange = {
+                expanded = it
+                onHideNavBar()
+            },
             colors = SearchBarDefaults.colors(
                 containerColor = if (!expanded) colorResource(R.color.white) else colorResource(R.color.background),
                 dividerColor = colorResource(R.color.accent_medium)
             ),
         ) {
+            Spacer(Modifier.height(16.dp))
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
-                    .padding(top = 16.dp)
                     .background(colorResource(R.color.background)),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 repeat(searchResults.size) {
-                    SearchItem(searchResults[it], Modifier.height(screenHeight * 0.14f), onBookDetailsNavigate)
+                    SearchItem(
+                        searchResults[it],
+                        Modifier.height(screenHeight * 0.14f),
+                        onBookDetailsNavigate
+                    )
                 }
 
-                Spacer(modifier = Modifier.height(128.dp))
+                Spacer(modifier = Modifier.height(24.dp))
             }
         }
 
@@ -250,7 +263,12 @@ fun SearchScreen(
                 SearchRowComponent(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 8.dp),
+                        .padding(top = 8.dp)
+                        .clickable {
+                            textFieldState = recentTexts[it]
+                            expanded = true
+                            onHideNavBar()
+                        },
                     content = {
                         Icon(
                             imageVector = ImageVector.vectorResource(R.drawable.ic_history),
@@ -298,7 +316,14 @@ fun SearchScreen(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     SearchRowComponent(
-                        modifier = Modifier.width((screenWidth - 40.dp) / 2),
+                        modifier = Modifier
+                            .width((screenWidth - 40.dp) / 2)
+                            .fillMaxRowHeight()
+                            .clickable {
+                                expanded = true
+                                textFieldState = genresTexts[it*2]
+                                onHideNavBar()
+                            },
                         content = {
                             SearchItemText(
                                 genresTexts[it * 2],
@@ -312,7 +337,14 @@ fun SearchScreen(
                     )
 
                     SearchRowComponent(
-                        modifier = Modifier.width((screenWidth - 40.dp) / 2 - 1.dp),
+                        modifier = Modifier
+                            .width((screenWidth - 40.dp) / 2 - 1.dp)
+                            .fillMaxRowHeight()
+                            .clickable {
+                                expanded = true
+                                textFieldState = genresTexts[it*2+1]
+                                onHideNavBar()
+                            },
                         content = {
                             SearchItemText(
                                 genresTexts[it * 2 + 1],
@@ -338,7 +370,12 @@ fun SearchScreen(
                 SearchRowComponent(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 8.dp),
+                        .padding(top = 8.dp)
+                        .clickable {
+                            expanded = true
+                            textFieldState = authors[it].text
+                            onHideNavBar()
+                        },
                     content = {
                         Image(
                             painterResource(authors[it].image),
@@ -374,5 +411,5 @@ fun SearchScreen(
 @Preview
 @Composable
 fun qerqq() {
-    SearchScreen{}
+    SearchScreen({}) {}
 }

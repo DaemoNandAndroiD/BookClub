@@ -4,5 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Chapter(
-    val chapterIndex:Int = 0
+    val chapterIndex:Int = 0,
+    val quote:String = ""
 )

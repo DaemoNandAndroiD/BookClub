@@ -91,6 +91,7 @@ import java.util.Locale
 @Composable
 fun ChapterScreen(
     launchChapterIndex: Int,
+    quote:String,
     navigateBack: () -> Unit
 ) {
     val configuration = LocalConfiguration.current
@@ -106,12 +107,13 @@ fun ChapterScreen(
     var sideSheetVisibility by remember { mutableStateOf(false) }
 
     var autoScrollState by remember { mutableStateOf(false) }
+    var highlightText by remember { mutableStateOf(false) }
 
     val chapterDataExt = chaptersExt
     var currentChapter by remember { mutableIntStateOf(launchChapterIndex) }
 
-    var currentParagraphIndex by remember { mutableIntStateOf(0) }
-    var currentSentenceIndex by remember { mutableIntStateOf(0) }
+    var currentParagraphIndex by remember { mutableIntStateOf(-1) }
+    var currentSentenceIndex by remember { mutableIntStateOf(-1) }
 
     val lazyColumnState = rememberLazyListState()
     val coroutineScroll = rememberCoroutineScope()
@@ -165,6 +167,36 @@ fun ChapterScreen(
                     delay(3000)
                 }
             }
+        }
+    }
+
+    var backGroundAlfa by remember { mutableFloatStateOf(1f) }
+
+    LaunchedEffect(Unit){
+        if(quote.isNotEmpty()){
+            loop@ for (ip in chapterDataExt[currentChapter].content.indices){
+                for (iS in chapterDataExt[currentChapter].content[ip].indices){
+                    if(chapterDataExt[currentChapter].content[ip][iS].contains(quote)){
+                        currentParagraphIndex = ip
+                        currentSentenceIndex = iS
+
+                        break@loop
+                    }
+                }
+            }
+
+            lazyColumnState.animateScrollToItem(currentParagraphIndex, scrollOffset = 100)
+
+            highlightText = true
+
+            backGroundAlfa = 0.3f
+            delay(4000)
+
+            currentParagraphIndex = -1
+            currentSentenceIndex = -1
+
+            highlightText = false
+            backGroundAlfa = 1f
         }
     }
 
@@ -290,7 +322,7 @@ fun ChapterScreen(
                                         p.forEachIndexed { indexChild, s ->
                                             withStyle(
                                                 style = SpanStyle(
-                                                    color = if(indexChild == currentSentenceIndex && indexParent == currentParagraphIndex && autoScrollState) colorResource(R.color.red_secondary) else colorResource(R.color.black)
+                                                    color = if(indexChild == currentSentenceIndex && indexParent == currentParagraphIndex && (autoScrollState|| highlightText)) colorResource(R.color.red_secondary) else colorResource(R.color.black).copy(alpha = backGroundAlfa)
                                                 )
                                             ){
                                                 append(parseItalic(s))
@@ -457,5 +489,5 @@ fun ChapterScreen(
 @Preview
 @Composable
 fun qqqweqw() {
-    ChapterScreen(1) { }
+    ChapterScreen(1, "Я все еще жив") { }
 }

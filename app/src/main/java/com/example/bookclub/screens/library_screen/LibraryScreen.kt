@@ -175,7 +175,9 @@ fun LibraryScreen(
                     recyclerView.layoutManager = manager
                     val snapHelper = CarouselSnapHelper()
                     snapHelper.attachToRecyclerView(recyclerView)
-                    recyclerView.adapter = CarouselAdapter(items)
+                    recyclerView.adapter = CarouselAdapter(items){
+                        onItemClick()
+                    }
 
                     recyclerView
                 }

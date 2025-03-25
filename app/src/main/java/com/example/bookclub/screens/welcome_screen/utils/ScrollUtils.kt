@@ -1,5 +1,6 @@
 package com.example.bookclub.screens.welcome_screen.utils
 
+import android.util.Log
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animate
@@ -7,6 +8,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.MutatePriority
 import androidx.compose.foundation.gestures.ScrollableState
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -23,21 +25,26 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import java.util.UUID
 
-private class AutoScrollItem<T>(
+data class ListItem(
     val id: String = UUID.randomUUID().toString(),
-    val data: T
+    val res:Int
 )
+
 
 @Composable
 fun AutoScrollingLazyRow(
     list: List<ListItem>,
     modifier: Modifier = Modifier,
-    itemContent: @Composable (item: ListItem) -> Unit,
+    itemContent: @Composable (item: Int) -> Unit,
+    lazyListState: LazyListState
 ) {
-    val lazyListState = rememberLazyListState()
-    val coroutineScope = rememberCoroutineScope()
+    LaunchedEffect(Unit) {
+        while (true) {
+            lazyListState.autoScroll()
+        }
+    }
 
-    var items by remember { mutableStateOf(list.mapAutoScrollItem()) }
+    var items by remember { mutableStateOf(list.mapListToFit()) }
 
     LazyRow(
         state = lazyListState,
@@ -48,52 +55,24 @@ fun AutoScrollingLazyRow(
         itemsIndexed(
             items, key = { _, item -> item.id }
         ) { index, item ->
-            itemContent(item.data)
+            itemContent(item.res)
 
             if (index == items.lastIndex) {
-                val currentList = items
-                val firstVisibleItemIndex = lazyListState.firstVisibleItemIndex
-                val secondPart = currentList.subList(0, firstVisibleItemIndex)
-                val firstPart =
-                    currentList.subList(firstVisibleItemIndex, currentList.size)
-
-                LaunchedEffect(key1 = Unit) {
-                    coroutineScope.launch {
-                        lazyListState.scrollToItem(
-                            0,
-                            maxOf(0, lazyListState.firstVisibleItemScrollOffset - 24)
-                        )
-                    }
-                }
-
-                items = (firstPart + secondPart)
-            }
-        }
-    }
-
-    LaunchedEffect(key1 = Unit) {
-        coroutineScope.launch {
-            while (true) {
-                lazyListState.autoScroll()
+                items = items.subList(lazyListState.firstVisibleItemIndex, items.size) + items.subList(0, lazyListState.firstVisibleItemIndex)
             }
         }
     }
 }
 
+fun List<ListItem>.mapListToFit() : List<ListItem>{
+    val newList = this.toMutableList()
 
-private fun <T : Any> List<T>.mapAutoScrollItem(): List<AutoScrollItem<T>> {
-    val newList = this.map { AutoScrollItem(data = it) }.toMutableList()
-    var index = 0
-    if (this.size < 10) {
-        while (newList.size != 10) {
-            if (index > this.size - 1) {
-                index = 0
-            }
-
-            newList.add(AutoScrollItem(data = this[index]))
-            index++
+    while (newList.size < 6){
+        this.forEach {
+            newList.add(ListItem(res = it.res))
         }
     }
+
     return newList
 }
 
@@ -102,7 +81,7 @@ suspend fun ScrollableState.autoScroll(
 ) {
     var previousValue = 0f
     scroll(MutatePriority.PreventUserInput) {
-        animate(0f, 24f, animationSpec = animationSpec) { currentValue, _ ->
+        animate(0f, 204f, animationSpec = animationSpec) { currentValue, _ ->
             previousValue += scrollBy(currentValue - previousValue)
         }
     }

@@ -1,5 +1,7 @@
 package com.example.bookclub.screens.book_details_screen
 
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,6 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -26,6 +29,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,7 +38,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -48,30 +57,54 @@ import com.example.bookclub.screens.book_details_screen.components.ChapterItem
 import com.example.bookclub.screens.book_details_screen.components.IconTextButton
 import com.example.bookclub.screens.book_details_screen.utils.BookDetailsData
 import com.example.bookclub.screens.book_details_screen.utils.bookDetailsData
+import com.example.bookclub.screens.book_details_screen.utils.parallaxScroll
 import com.example.bookclub.screens.bookmarks_screen.components.BookProgress
 import com.example.bookclub.ui.theme.alumniSansFontFamily
 import com.example.bookclub.ui.theme.velaSansFontFamily
 import com.example.bookclub.utils.parseParagraph
 import java.util.Locale
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun BookDetailsScreen(
     navigateBack: () -> Unit,
-    onRead: () -> Unit
+    onRead: (Int) -> Unit
 ) {
+    val configuration = LocalConfiguration.current
+    val screenWidthDp = configuration.screenWidthDp.dp
+
+    val context = LocalContext.current
+    val displayMetrics = context.resources.displayMetrics
+
+    val widthPx = displayMetrics.widthPixels
+    val heightPx = displayMetrics.heightPixels
+
+    val heightPicture = widthPx * 380 / 412
+
+
     var favoriteState by remember { mutableStateOf(false) }
 
+    val listState = rememberLazyListState()
+
+    val scrollOffsetPx by remember {
+        derivedStateOf { listState.firstVisibleItemScrollOffset.toFloat() }
+    }
+
+    val alphaTop = (scrollOffsetPx/heightPicture).coerceIn(0f,1f)
+
     LazyColumn(
-        Modifier
+        state = listState,
+        modifier = Modifier
             .fillMaxSize()
-            .background(colorResource(R.color.background))
     ) {
         item {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .aspectRatio(412f / 380f),
+                    .aspectRatio(412f / 380f)
+                    .parallaxScroll(listState, 2f)
             ) {
+
                 Image(
                     painterResource(bookDetailsData.imageBackground),
                     contentDescription = null,
@@ -83,15 +116,17 @@ fun BookDetailsScreen(
                         ),
                     contentScale = ContentScale.FillBounds
                 )
+
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .fillMaxHeight(0.5f)
+                        .fillMaxHeight(1f)
                         .align(Alignment.BottomStart)
                         .background(
                             Brush.verticalGradient(
                                 colors = listOf(
-                                    colorResource(R.color.background).copy(alpha = 0f),
+                                    colorResource(R.color.background).copy(alpha = alphaTop),
+                                    colorResource(R.color.background).copy(alpha = alphaTop),
                                     colorResource(R.color.background)
                                 )
                             ),
@@ -114,12 +149,15 @@ fun BookDetailsScreen(
             }
         }
 
-        item {
+        stickyHeader {
             Row(
                 modifier = Modifier
-                    .padding(horizontal = dimensionResource(R.dimen.small_startend_padding))
                     .fillMaxWidth()
-                    .offset(y = (-24).dp),
+                    .background(colorResource(R.color.background))
+                    .padding(
+                        horizontal = dimensionResource(R.dimen.small_startend_padding),
+                        vertical = 24.dp
+                    ),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 IconTextButton(
@@ -128,7 +166,7 @@ fun BookDetailsScreen(
                     textContent = stringResource(R.string.read_button),
                     textIcon = R.drawable.ic_play,
                     modifier = Modifier.fillMaxWidth(0.55f),
-                    onClick = onRead
+                    onClick = {onRead(3)}
                 )
 
                 IconTextButton(
@@ -148,7 +186,10 @@ fun BookDetailsScreen(
 
         item {
             Text(
-                modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.small_startend_padding)),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(colorResource(R.color.background))
+                    .padding(horizontal = dimensionResource(R.dimen.small_startend_padding)),
                 text = bookDetailsData.title.uppercase(Locale.getDefault()),
                 fontSize = 48.sp,
                 fontFamily = alumniSansFontFamily,
@@ -160,6 +201,8 @@ fun BookDetailsScreen(
         item {
             Text(
                 modifier = Modifier
+                    .fillMaxWidth()
+                    .background(colorResource(R.color.background))
                     .padding(
                         start = dimensionResource(R.dimen.small_startend_padding),
                         top = 8.dp
@@ -176,6 +219,7 @@ fun BookDetailsScreen(
             Text(
                 text = line,
                 modifier = Modifier
+                    .background(colorResource(R.color.background))
                     .padding(
                         start = dimensionResource(R.dimen.small_startend_padding),
                         end = dimensionResource(R.dimen.small_startend_padding),
@@ -191,10 +235,13 @@ fun BookDetailsScreen(
             )
         }
 
-        if(bookDetailsData.chapters.find { it.isDone } != null){
+        if (bookDetailsData.chapters.find { it.isDone } != null) {
             item {
                 Text(
-                    modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.small_startend_padding)),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(colorResource(R.color.background))
+                        .padding(horizontal = dimensionResource(R.dimen.small_startend_padding)),
                     text = stringResource(R.string.progress_section_title).uppercase(Locale.getDefault()),
                     fontSize = 24.sp,
                     fontFamily = alumniSansFontFamily,
@@ -203,25 +250,30 @@ fun BookDetailsScreen(
                 )
             }
 
-            item{
+            item {
                 BookProgress(
                     bookDetailsData.percent,
-                    modifier = Modifier.padding(
-                        top = 12.dp,
-                        bottom = 20.dp,
-                        start = dimensionResource(R.dimen.small_startend_padding),
-                        end = dimensionResource(R.dimen.small_startend_padding),
-                    )
+                    modifier = Modifier
+                        .background(colorResource(R.color.background))
+                        .padding(
+                            top = 12.dp,
+                            bottom = 20.dp,
+                            start = dimensionResource(R.dimen.small_startend_padding),
+                            end = dimensionResource(R.dimen.small_startend_padding),
+                        )
                 )
             }
         }
 
         item {
             Text(
-                modifier = Modifier.padding(
-                    horizontal = dimensionResource(R.dimen.small_startend_padding),
-                    vertical = 8.dp
-                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(colorResource(R.color.background))
+                    .padding(
+                        horizontal = dimensionResource(R.dimen.small_startend_padding),
+                        vertical = 8.dp
+                    ),
                 text = stringResource(R.string.chapters_section_title).uppercase(Locale.getDefault()),
                 fontSize = 24.sp,
                 fontFamily = alumniSansFontFamily,
@@ -233,8 +285,10 @@ fun BookDetailsScreen(
         items(bookDetailsData.chapters.size) {
             ChapterItem(
                 chapterData = bookDetailsData.chapters[it],
-                modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.small_startend_padding)),
-                onClick = onRead
+                modifier = Modifier
+                    .background(colorResource(R.color.background))
+                    .padding(horizontal = dimensionResource(R.dimen.small_startend_padding)),
+                onClick = {onRead(it)}
             )
         }
 

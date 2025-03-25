@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -49,7 +50,7 @@ fun InputField(
                 fontWeight = FontWeight.Normal,
                 color = colorResource(R.color.accent_medium)
                 ) },
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().testTag(tag = "login_input_field"),
         textStyle = TextStyle(
             fontFamily = velaSansFontFamily,
             fontSize = 14.sp,

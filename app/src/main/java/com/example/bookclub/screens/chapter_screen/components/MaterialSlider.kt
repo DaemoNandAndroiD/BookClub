@@ -48,7 +48,7 @@ fun MaterialSlider(
     val interactionSource = remember { MutableInteractionSource() }
     val colors = SliderDefaults.colors(
         thumbColor = colorResource(R.color.accent_dark),
-        activeTrackColor = colorResource(R.color.accent_medium),
+        activeTrackColor = colorResource(R.color.accent_dark),
         inactiveTrackColor = colorResource(R.color.accent_medium),
         activeTickColor = colorResource(R.color.accent_dark),
         inactiveTickColor = colorResource(R.color.accent_dark),

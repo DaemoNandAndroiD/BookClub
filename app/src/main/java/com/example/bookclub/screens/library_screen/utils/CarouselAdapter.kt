@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.bookclub.R
 import com.google.android.material.carousel.MaskableFrameLayout
 
-class CarouselAdapter(private val items:List<HorizontalCarouselData>) : RecyclerView.Adapter<CarouselAdapter.CarouselViewHolder>() {
+class CarouselAdapter(private val items:List<HorizontalCarouselData>, val onItemClick:(Int)->Unit) : RecyclerView.Adapter<CarouselAdapter.CarouselViewHolder>() {
 
     class CarouselViewHolder(view: View):RecyclerView.ViewHolder(view){
         val imageView = view.findViewById<ImageView>(R.id.carousel_image_view)
@@ -39,5 +39,8 @@ class CarouselAdapter(private val items:List<HorizontalCarouselData>) : Recycler
         holder.imageView.setImageResource(items[position].book)
         holder.desc.text = items[position].description
         holder.title.text = items[position].title
+        holder.imageView.setOnClickListener {
+            onItemClick(position)
+        }
     }
 }

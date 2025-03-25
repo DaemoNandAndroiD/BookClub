@@ -15,6 +15,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
@@ -46,7 +47,7 @@ fun PasswordInputField(
                 fontWeight = FontWeight.Normal,
                 color = colorResource(R.color.accent_medium)
             ) },
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().testTag("password_input"),
         textStyle = TextStyle(
             fontFamily = velaSansFontFamily,
             fontSize = 14.sp,

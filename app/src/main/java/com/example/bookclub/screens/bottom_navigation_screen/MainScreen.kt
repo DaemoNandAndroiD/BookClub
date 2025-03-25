@@ -8,8 +8,10 @@ import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -41,14 +43,27 @@ fun MainScreen(
 
     var bottomBarVisibility by remember { mutableStateOf(true) }
 
+    var selectedNavigationIndex by rememberSaveable {
+        mutableIntStateOf(0)
+    }
+
     Scaffold(
         bottomBar = {
             if(bottomBarVisibility){
                 CustomBottomNavigation(
-                    navigateToLibrary = {navController.navigate(Library)},
-                    navigateToSearch = {navController.navigate(Search)},
-                    navigateToBookmark = {navController.navigate(Bookmarks)},
-                    navigateToLogout = {logOutOnclick()}
+                    selectedNavigationIndex,
+                    navigateToLibrary = {
+                        selectedNavigationIndex = it
+                        navController.navigate(Library) },
+                    navigateToSearch = {
+                        selectedNavigationIndex = it
+                        navController.navigate(Search)},
+                    navigateToBookmark = {
+                        selectedNavigationIndex = it
+                        navController.navigate(Bookmarks)},
+                    navigateToLogout = {
+                        selectedNavigationIndex = it
+                        logOutOnclick()}
                 )
             }},
 
@@ -70,9 +85,14 @@ fun MainScreen(
             }
             composable<Search> {
                 bottomBarVisibility = true
-                SearchScreen{
-                    navController.navigate(BookDetails)
-                }
+                SearchScreen(
+                    onHideNavBar = {
+                        bottomBarVisibility = !bottomBarVisibility
+                    },
+                    onBookDetailsNavigate = {
+                        navController.navigate(BookDetails)
+                    }
+                )
             }
             composable<Bookmarks> {
                 bottomBarVisibility = true
@@ -82,6 +102,9 @@ fun MainScreen(
                     },
                     onBookDetailsNavigate = {
                         navController.navigate(BookDetails)
+                    },
+                    onChapterWithQuoteNavigate = {index,quote->
+                        navController.navigate(Chapter(index, quote))
                     }
                 )
             }
@@ -93,7 +116,7 @@ fun MainScreen(
                         navController.popBackStack()
                     },
                     onRead = {
-                        navController.navigate(Chapter())
+                        navController.navigate(Chapter(it))
                     }
                 )
             }
@@ -101,7 +124,8 @@ fun MainScreen(
             composable<Chapter> {
                 bottomBarVisibility = false
                 ChapterScreen(
-                    launchChapterIndex = it.arguments?.getInt("chapterIndex") ?: 0
+                    launchChapterIndex = it.arguments?.getInt("chapterIndex") ?: 0,
+                    quote = it.arguments?.getString("quote") ?: ""
                 ){
                     navController.popBackStack()
                 }

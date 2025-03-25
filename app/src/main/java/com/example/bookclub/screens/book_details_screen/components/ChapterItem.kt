@@ -30,7 +30,7 @@ fun ChapterItem(
     onClick:()->Unit
 ){
     Row(
-        modifier = if(!chapterData.isActive) modifier.fillMaxWidth() else modifier.fillMaxWidth().clickable { onClick() }
+        modifier = modifier.fillMaxWidth().clickable { onClick() }
     ) {
         Text(
             modifier = Modifier

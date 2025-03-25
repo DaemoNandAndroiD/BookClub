@@ -71,4 +71,5 @@
     </string>
     <string name="font_size_header">Размер шрифта</string>
     <string name="line_spacing_header">Расстояние между строками</string>
+    <string name="test_tag_button_enter">enter_button</string>
 </resources>

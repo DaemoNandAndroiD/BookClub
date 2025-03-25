@@ -48,13 +48,14 @@ import java.util.Locale
 
 @Composable
 fun BookmarksScreen(
-    onChapterNavigate:(Int)->Unit,
-    onBookDetailsNavigate:()->Unit
+    onChapterNavigate: (Int) -> Unit,
+    onChapterWithQuoteNavigate: (Int, String) -> Unit,
+    onBookDetailsNavigate: () -> Unit
 ) {
 
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
-    
+
     val continueReadingData = ContinueReadingData(
         R.drawable.image,
         "Код да винчи",
@@ -72,7 +73,8 @@ fun BookmarksScreen(
 
     val quotes = listOf(
         QuoteData("Я все еще жив", "Код да винчи", "Дэн Браун", chapterIndex = 1),
-        QuoteData("умерщвления плоти", "Код да винчи", "Дэн Браун", chapterIndex = 0)
+        QuoteData("умерщвления плоти", "Код да винчи", "Дэн Браун", chapterIndex = 0),
+        QuoteData("Ты не должен бежать", "Код да винчи", "Дэн Браун", chapterIndex = 4)
     )
 
     LazyColumn(
@@ -112,7 +114,7 @@ fun BookmarksScreen(
                 IconButton(
                     modifier = Modifier
                         .background(colorResource(R.color.accent_dark), CircleShape),
-                    onClick = {onChapterNavigate(0)}
+                    onClick = { onChapterNavigate(8) }
                 ) {
                     Icon(
                         ImageVector.vectorResource(R.drawable.ic_play),
@@ -124,9 +126,11 @@ fun BookmarksScreen(
             }
         }
 
-        item{
+        item {
             BookWithProgress(
-                modifier = Modifier.height(screenHeight * 0.15f),
+                modifier = Modifier
+                    .height(screenHeight * 0.15f)
+                    .clickable { onBookDetailsNavigate() },
                 continueReadingData = continueReadingData,
             )
         }
@@ -144,7 +148,9 @@ fun BookmarksScreen(
         items(favoriteBooks.size) {
             SearchItem(
                 favoriteBooks[it],
-                modifier = Modifier.padding(top = 8.dp).height(screenHeight * 0.15f),
+                modifier = Modifier
+                    .padding(top = 8.dp)
+                    .height(screenHeight * 0.15f),
                 onClick = onBookDetailsNavigate
             )
         }
@@ -162,18 +168,16 @@ fun BookmarksScreen(
         }
 
         items(quotes.size) {
-            Quote(quotes[it], Modifier.fillMaxWidth().padding(top = 8.dp).clickable { onChapterNavigate(quotes[it].chapterIndex) })
+            Quote(
+                quotes[it],
+                Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp)
+                    .clickable { onChapterWithQuoteNavigate(quotes[it].chapterIndex, quotes[it].quote) })
         }
 
         item {
             Spacer(modifier = Modifier.height(128.dp))
         }
     }
-}
-
-
-@Preview
-@Composable
-fun dada() {
-    BookmarksScreen({}){}
 }
