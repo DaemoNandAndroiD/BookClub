@@ -87,7 +87,6 @@ fun MainScreen(
                 }
             }
             composable<Search> {
-                bottomBarVisibility = true
                 SearchScreen(
                     onHideNavBar = {
                         bottomBarVisibility = !bottomBarVisibility
