@@ -19,11 +19,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.bookclub.R
+import com.example.bookclub.screens.chapter_screen.ChapterScreenTestTags
 
 @Composable
 fun ChapterBottomAppBar(
@@ -47,7 +49,8 @@ fun ChapterBottomAppBar(
         ) {
             IconButton(
                 onClick = onPreviousClick,
-                enabled = isPreviousEnabled
+                enabled = isPreviousEnabled,
+                modifier = Modifier.testTag(ChapterScreenTestTags.NAVIGATE_BACK)
             ) {
                 Icon(
                     ImageVector.vectorResource(R.drawable.ic_chapter_back),
@@ -57,7 +60,8 @@ fun ChapterBottomAppBar(
             }
 
             IconButton(
-                onClick = onMenuClick
+                onClick = onMenuClick,
+                modifier = Modifier.testTag(ChapterScreenTestTags.MENU_BUTTON)
             ) {
                 Icon(
                     ImageVector.vectorResource(R.drawable.ic_chapter_menu),
@@ -68,7 +72,8 @@ fun ChapterBottomAppBar(
 
             IconButton(
                 onClick = onNextClick,
-                enabled = isNextEnabled
+                enabled = isNextEnabled,
+                modifier = Modifier.testTag(ChapterScreenTestTags.NAVIGATE_FORWARD)
             ) {
                 Icon(
                     ImageVector.vectorResource(R.drawable.ic_chapter_next),
@@ -78,7 +83,8 @@ fun ChapterBottomAppBar(
             }
 
             IconButton(
-                onClick = onSettingsClick
+                onClick = onSettingsClick,
+                modifier = Modifier.testTag(ChapterScreenTestTags.SETTINGS_BUTTON)
             ) {
                 Icon(
                     ImageVector.vectorResource(R.drawable.ic_chapter_settings),

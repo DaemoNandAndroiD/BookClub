@@ -16,13 +16,14 @@ import com.example.bookclub.R
 
 @Composable
 fun BottomNavigationFab(
+    modifier: Modifier,
     onClick:()->Unit
 ) {
     FloatingActionButton(
         onClick = onClick,
         containerColor = colorResource(R.color.red_secondary),
         shape = CircleShape,
-        modifier = Modifier.size(80.dp).offset(y = 88.dp)
+        modifier = modifier.size(80.dp).offset(y = 88.dp)
     ) {
         Icon(
             ImageVector.vectorResource(R.drawable.ic_play),

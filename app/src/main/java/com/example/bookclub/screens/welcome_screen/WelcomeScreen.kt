@@ -167,7 +167,7 @@ fun WelcomeScreen(
                         bottom = dimensionResource(R.dimen.medium_vertical_padding),
                         top = dimensionResource(R.dimen.small_startend_padding),
                     )
-                    .testTag(stringResource(R.string.test_tag_button_enter))
+                    .testTag(WelcomeScreenTestTags.enterBtn)
                     .fillMaxWidth()
                     .background(
                         if (emailInput.text.isEmpty() || passwordInput.text.isEmpty())
@@ -177,10 +177,11 @@ fun WelcomeScreen(
                     ),
                 onClick = {
                     navigateToMain()
-                }
+                },
+                enabled = !(emailInput.text.isEmpty() || passwordInput.text.isEmpty())
             ) {
                 Text(
-                    modifier = Modifier.testTag(stringResource(R.string.enter_button_title)),
+                    modifier = Modifier.testTag(WelcomeScreenTestTags.enterBtnText),
                     text = stringResource(R.string.enter_button_title),
                     fontFamily = velaSansFontFamily,
                     fontWeight = FontWeight.Bold,
@@ -192,10 +193,4 @@ fun WelcomeScreen(
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun Preview() {
-    WelcomeScreen({})
 }

@@ -14,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.NavHost
@@ -69,7 +70,9 @@ fun MainScreen(
 
         floatingActionButton = {
             if(bottomBarVisibility){
-                BottomNavigationFab{
+                BottomNavigationFab(
+                    modifier = Modifier.testTag(MainScreenTestTags.PLAY_NAV)
+                ){
                     navController.navigate(Chapter())
                 }
             } },

@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -28,6 +29,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.bookclub.R
+import com.example.bookclub.screens.bookmarks_screen.BookMarksScreenTestTag
 import com.example.bookclub.screens.bookmarks_screen.utils.ContinueReadingData
 import com.example.bookclub.ui.theme.alumniSansFontFamily
 import com.example.bookclub.ui.theme.velaSansFontFamily
@@ -62,14 +64,16 @@ fun BookWithProgress(
                     fontSize = 24.sp,
                     fontFamily = alumniSansFontFamily,
                     fontWeight = FontWeight.Bold,
-                    color = colorResource(R.color.accent_dark)
+                    color = colorResource(R.color.accent_dark),
+                    modifier = Modifier.testTag(BookMarksScreenTestTag.bookReadingNowTitle)
                 )
                 Text(
                     text = continueReadingData.stage,
                     fontSize = 14.sp,
                     fontFamily = velaSansFontFamily,
                     fontWeight = FontWeight.Bold,
-                    color = colorResource(R.color.accent_dark)
+                    color = colorResource(R.color.accent_dark),
+                    modifier = Modifier.testTag(BookMarksScreenTestTag.bookReadingNowStage)
                 )
             }
 

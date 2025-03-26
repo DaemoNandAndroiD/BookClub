@@ -26,6 +26,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.bookclub.R
+import com.example.bookclub.screens.welcome_screen.WelcomeScreenTestTags
 import com.example.bookclub.ui.theme.velaSansFontFamily
 
 @Composable
@@ -47,7 +48,7 @@ fun PasswordInputField(
                 fontWeight = FontWeight.Normal,
                 color = colorResource(R.color.accent_medium)
             ) },
-        modifier = Modifier.fillMaxWidth().testTag("password_input"),
+        modifier = Modifier.fillMaxWidth().testTag(WelcomeScreenTestTags.passwordInput),
         textStyle = TextStyle(
             fontFamily = velaSansFontFamily,
             fontSize = 14.sp,

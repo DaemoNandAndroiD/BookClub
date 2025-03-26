@@ -9,6 +9,7 @@ import androidx.compose.ui.util.lerp
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bookclub.R
 import com.google.android.material.carousel.MaskableFrameLayout
+import java.util.Locale
 
 class CarouselAdapter(private val items:List<HorizontalCarouselData>, val onItemClick:(Int)->Unit) : RecyclerView.Adapter<CarouselAdapter.CarouselViewHolder>() {
 
@@ -38,7 +39,7 @@ class CarouselAdapter(private val items:List<HorizontalCarouselData>, val onItem
 
         holder.imageView.setImageResource(items[position].book)
         holder.desc.text = items[position].description
-        holder.title.text = items[position].title
+        holder.title.text = items[position].title.uppercase(Locale.getDefault())
         holder.imageView.setOnClickListener {
             onItemClick(position)
         }

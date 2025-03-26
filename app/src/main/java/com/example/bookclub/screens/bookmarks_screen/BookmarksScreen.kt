@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -38,6 +39,9 @@ import com.example.bookclub.screens.bookmarks_screen.components.BookWithProgress
 import com.example.bookclub.screens.bookmarks_screen.components.Quote
 import com.example.bookclub.screens.bookmarks_screen.utils.ContinueReadingData
 import com.example.bookclub.screens.bookmarks_screen.utils.QuoteData
+import com.example.bookclub.screens.bookmarks_screen.utils.getContinueReadingData
+import com.example.bookclub.screens.bookmarks_screen.utils.getFavoriteBooks
+import com.example.bookclub.screens.bookmarks_screen.utils.getQuotes
 import com.example.bookclub.screens.library_screen.utils.GridItemData
 import com.example.bookclub.screens.search_screen.components.CategoryTitle
 import com.example.bookclub.screens.search_screen.components.SearchItem
@@ -48,6 +52,9 @@ import java.util.Locale
 
 @Composable
 fun BookmarksScreen(
+    continueReading: ContinueReadingData? = null,
+    favoriteBooksData: List<GridItemData>? = null,
+    quoteData: List<QuoteData>? = null,
     onChapterNavigate: (Int) -> Unit,
     onChapterWithQuoteNavigate: (Int, String) -> Unit,
     onBookDetailsNavigate: () -> Unit
@@ -56,37 +63,24 @@ fun BookmarksScreen(
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
 
-    val continueReadingData = ContinueReadingData(
-        R.drawable.image,
-        "Код да винчи",
-        "Пролог",
-        percent = 60f
-    )
+    val continueReadingData = getContinueReadingData(continueReading)
 
-    val favoriteBooks = listOf(
-        GridItemData(R.drawable.image, "Код да винчи", "Дэн Браун"),
-        GridItemData(R.drawable.image, "Код да винчи", "Дэн Браун"),
-        GridItemData(R.drawable.image, "Код да винчи", "Дэн Браун"),
-        GridItemData(R.drawable.image, "Код да винчи", "Дэн Браун"),
-        GridItemData(R.drawable.image, "Код да винчи", "Дэн Браун"),
-    )
+    val favoriteBooks = getFavoriteBooks(favoriteBooksData)
 
-    val quotes = listOf(
-        QuoteData("Я все еще жив", "Код да винчи", "Дэн Браун", chapterIndex = 1),
-        QuoteData("умерщвления плоти", "Код да винчи", "Дэн Браун", chapterIndex = 0),
-        QuoteData("Ты не должен бежать", "Код да винчи", "Дэн Браун", chapterIndex = 4)
-    )
+    val quotes = getQuotes(quoteData)
 
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .background(colorResource(R.color.background))
             .padding(horizontal = dimensionResource(R.dimen.small_startend_padding))
+            .testTag(BookMarksScreenTestTag.scrollCont)
             .statusBarsPadding()
     ) {
         item {
             Text(
                 modifier = Modifier
+                    .testTag(BookMarksScreenTestTag.title)
                     .fillMaxWidth()
                     .background(colorResource(R.color.background))
                     .padding(
@@ -106,13 +100,16 @@ fun BookmarksScreen(
             ) {
                 CategoryTitle(
                     text = stringResource(R.string.read_now_category),
-                    modifier = Modifier.align(Alignment.CenterVertically)
+                    modifier = Modifier
+                        .testTag(BookMarksScreenTestTag.readingNowCategory)
+                        .align(Alignment.CenterVertically)
                 )
 
                 Spacer(Modifier.weight(1f))
 
                 IconButton(
                     modifier = Modifier
+                        .testTag(BookMarksScreenTestTag.readingBtn)
                         .background(colorResource(R.color.accent_dark), CircleShape),
                     onClick = { onChapterNavigate(8) }
                 ) {
@@ -129,51 +126,65 @@ fun BookmarksScreen(
         item {
             BookWithProgress(
                 modifier = Modifier
+                    .testTag(BookMarksScreenTestTag.readingNowBook)
                     .height(screenHeight * 0.15f)
                     .clickable { onBookDetailsNavigate() },
                 continueReadingData = continueReadingData,
             )
         }
 
-        item {
-            CategoryTitle(
-                text = stringResource(R.string.favorite_books_category),
-                modifier = Modifier.padding(
-                    top = dimensionResource(R.dimen.medium_vertical_padding),
-                    bottom = 8.dp
+        if (favoriteBooks.isNotEmpty()) {
+            item {
+                CategoryTitle(
+                    text = stringResource(R.string.favorite_books_category),
+                    modifier = Modifier
+                        .testTag(BookMarksScreenTestTag.favoritesCategory)
+                        .padding(
+                            top = dimensionResource(R.dimen.medium_vertical_padding),
+                            bottom = 8.dp
+                        )
                 )
-            )
+            }
+
+            items(favoriteBooks.size) {
+                SearchItem(
+                    favoriteBooks[it],
+                    modifier = Modifier
+                        .testTag(BookMarksScreenTestTag.favoritesItem)
+                        .padding(top = 8.dp)
+                        .height(screenHeight * 0.15f),
+                    onClick = onBookDetailsNavigate
+                )
+            }
         }
 
-        items(favoriteBooks.size) {
-            SearchItem(
-                favoriteBooks[it],
-                modifier = Modifier
-                    .padding(top = 8.dp)
-                    .height(screenHeight * 0.15f),
-                onClick = onBookDetailsNavigate
-            )
-        }
+        if (quotes.isNotEmpty()) {
+            item {
+                CategoryTitle(
+                    text = stringResource(R.string.quotes_category),
+                    modifier = Modifier
+                        .testTag(BookMarksScreenTestTag.quotesCategory)
+                        .padding(
+                            top = dimensionResource(R.dimen.medium_vertical_padding),
+                            bottom = 8.dp
+                        )
+                )
+            }
 
-
-        item {
-            CategoryTitle(
-                text = stringResource(R.string.quotes_category),
-                modifier = Modifier
-                    .padding(
-                        top = dimensionResource(R.dimen.medium_vertical_padding),
-                        bottom = 8.dp
-                    )
-            )
-        }
-
-        items(quotes.size) {
-            Quote(
-                quotes[it],
-                Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp)
-                    .clickable { onChapterWithQuoteNavigate(quotes[it].chapterIndex, quotes[it].quote) })
+            items(quotes.size) {
+                Quote(
+                    quotes[it],
+                    Modifier
+                        .testTag(BookMarksScreenTestTag.quoteItem)
+                        .fillMaxWidth()
+                        .padding(top = 8.dp)
+                        .clickable {
+                            onChapterWithQuoteNavigate(
+                                quotes[it].chapterIndex,
+                                quotes[it].quote
+                            )
+                        })
+            }
         }
 
         item {

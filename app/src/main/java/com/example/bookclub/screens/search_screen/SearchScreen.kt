@@ -46,6 +46,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -53,6 +54,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -70,6 +72,10 @@ import com.example.bookclub.screens.search_screen.components.CategoryTitle
 import com.example.bookclub.screens.search_screen.components.SearchItem
 import com.example.bookclub.screens.search_screen.components.SearchItemText
 import com.example.bookclub.screens.search_screen.components.SearchRowComponent
+import com.example.bookclub.screens.search_screen.components.getAuthors
+import com.example.bookclub.screens.search_screen.components.getGenresTexts
+import com.example.bookclub.screens.search_screen.components.getRecentTexts
+import com.example.bookclub.screens.search_screen.components.getSearchResults
 import com.example.bookclub.screens.search_screen.utils.Author
 import com.example.bookclub.ui.theme.velaSansFontFamily
 import kotlin.math.exp
@@ -77,6 +83,10 @@ import kotlin.math.exp
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun SearchScreen(
+    recentTextsData: List<String>? = null,
+    searchResultsData: List<GridItemData>? = null,
+    genresData: List<String>? = null,
+    authorsData: List<Author>? = null,
     onBookDetailsNavigate: () -> Unit,
     onHideNavBar: () -> Unit
 ) {
@@ -87,43 +97,13 @@ fun SearchScreen(
     val screenWidth = configuration.screenWidthDp.dp
     val screenHeight = configuration.screenHeightDp.dp
 
-    val recentTexts = remember { mutableStateListOf("iOS", "Android", "Тихий дэн") }
+    val recentTexts = remember { getRecentTexts(recentTextsData).toMutableStateList() }
 
-    val searchResults = listOf(
-        GridItemData(R.drawable.image, "Код да винчи", "Дэн Браун"),
-        GridItemData(R.drawable.image, "Код да винчи", "Дэн Браун"),
-        GridItemData(R.drawable.image, "Код да винчи", "Дэн Браун"),
-        GridItemData(R.drawable.image, "Код да винчи", "Дэн Браун"),
-        GridItemData(R.drawable.image, "Код да винчи", "Дэн Браун"),
-        GridItemData(R.drawable.image, "Код да винчи", "Дэн Браун"),
-        GridItemData(R.drawable.image, "Код да винчи", "Дэн Браун"),
-        GridItemData(R.drawable.image, "Код да винчи", "Дэн Браун"),
-        GridItemData(R.drawable.image, "Код да винчи", "Дэн Браун"),
-        GridItemData(R.drawable.image, "Код да винчи", "Дэн Браун"),
-        GridItemData(R.drawable.image, "Код да винчи", "Дэн Браун"),
-    )
+    val searchResults = getSearchResults(searchResultsData)
 
-    val genresTexts = listOf(
-        "Классика",
-        "Фэнтези",
-        "Фантастика",
-        "Детектив",
-        "Триллер",
-        "Исторический роман",
-        "Любовный роман",
-        "Приключения",
-        "Поэзия",
-        "Биография",
-        "Для подростков",
-        "Для детей",
-    )
+    val genresTexts = getGenresTexts(genresData)
 
-    val authors = listOf(
-        Author(R.drawable.author_image1, "Братья Стругацкие"),
-        Author(R.drawable.author_image1, "Братья Стругацкие"),
-        Author(R.drawable.author_image1, "Братья Стругацкие"),
-        Author(R.drawable.author_image1, "Братья Стругацкие"),
-    )
+    val authors = getAuthors(authorsData)
 
     Column(
         modifier = Modifier
@@ -134,6 +114,7 @@ fun SearchScreen(
 
         SearchBar(
             modifier = Modifier
+                .testTag(SearchScreenTestTags.SEARCH_BAR)
                 .fillMaxWidth()
                 .padding(
                     start = dimensionResource(R.dimen.small_startend_padding),
@@ -144,6 +125,7 @@ fun SearchScreen(
                 SearchBarDefaults.InputField(
                     modifier = Modifier
                         .fillMaxSize()
+                        .testTag(SearchScreenTestTags.SEARCH_BAR_FIELD)
                         .border(
                             width = 1.dp,
                             color = if (!expanded) colorResource(R.color.accent_medium) else Color.Transparent,
@@ -163,7 +145,8 @@ fun SearchScreen(
                             fontSize = 16.sp,
                             fontFamily = velaSansFontFamily,
                             fontWeight = FontWeight.Normal,
-                            color = colorResource(R.color.accent_medium)
+                            color = colorResource(R.color.accent_medium),
+                            modifier = Modifier.testTag(SearchScreenTestTags.SEARCH_BAR_PLACEHOLDER)
                         )
                     },
 
@@ -183,6 +166,7 @@ fun SearchScreen(
                             )
                         } else {
                             IconButton(
+                                modifier = Modifier.testTag(SearchScreenTestTags.SEARCH_BACK_BUTTON),
                                 onClick = {
                                     expanded = false
                                     onHideNavBar()
@@ -234,7 +218,7 @@ fun SearchScreen(
                 repeat(searchResults.size) {
                     SearchItem(
                         searchResults[it],
-                        Modifier.height(screenHeight * 0.14f),
+                        Modifier.testTag(SearchScreenTestTags.SEARCH_RESULT).height(screenHeight * 0.14f),
                         onBookDetailsNavigate
                     )
                 }
@@ -245,6 +229,7 @@ fun SearchScreen(
 
         LazyColumn(
             modifier = Modifier
+                .testTag(SearchScreenTestTags.SCROLL_COLUMN)
                 .fillMaxWidth()
                 .padding(
                     top = 24.dp,
@@ -252,16 +237,20 @@ fun SearchScreen(
                     end = dimensionResource(R.dimen.small_startend_padding)
                 )
         ) {
-            item {
-                CategoryTitle(
-                    stringResource(R.string.recent_category),
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
+            if (recentTexts.isNotEmpty()) {
+                item {
+                    CategoryTitle(
+                        stringResource(R.string.recent_category),
+                        modifier = Modifier.padding(bottom = 8.dp).testTag(SearchScreenTestTags.RECENT_CATEGORY)
+                    )
+                }
             }
+
 
             items(recentTexts.size) {
                 SearchRowComponent(
                     modifier = Modifier
+                        .testTag(SearchScreenTestTags.RECENT_ITEM)
                         .fillMaxWidth()
                         .padding(top = 8.dp)
                         .clickable {
@@ -302,11 +291,13 @@ fun SearchScreen(
                 )
             }
 
-            item {
-                CategoryTitle(
-                    stringResource(R.string.genres_category),
-                    modifier = Modifier.padding(top = 24.dp, bottom = 8.dp)
-                )
+            if (genresTexts.isNotEmpty()) {
+                item {
+                    CategoryTitle(
+                        stringResource(R.string.genres_category),
+                        modifier = Modifier.padding(top = 24.dp, bottom = 8.dp).testTag(SearchScreenTestTags.GENRES_CATEGORY)
+                    )
+                }
             }
 
             items(genresTexts.size / 2) {
@@ -317,11 +308,12 @@ fun SearchScreen(
                 ) {
                     SearchRowComponent(
                         modifier = Modifier
+                            .testTag(SearchScreenTestTags.GENRE_ITEM)
                             .width((screenWidth - 40.dp) / 2)
                             .fillMaxRowHeight()
                             .clickable {
                                 expanded = true
-                                textFieldState = genresTexts[it*2]
+                                textFieldState = genresTexts[it * 2]
                                 onHideNavBar()
                             },
                         content = {
@@ -338,11 +330,12 @@ fun SearchScreen(
 
                     SearchRowComponent(
                         modifier = Modifier
+                            .testTag(SearchScreenTestTags.GENRE_ITEM)
                             .width((screenWidth - 40.dp) / 2 - 1.dp)
                             .fillMaxRowHeight()
                             .clickable {
                                 expanded = true
-                                textFieldState = genresTexts[it*2+1]
+                                textFieldState = genresTexts[it * 2 + 1]
                                 onHideNavBar()
                             },
                         content = {
@@ -359,16 +352,19 @@ fun SearchScreen(
                 }
             }
 
-            item {
-                CategoryTitle(
-                    stringResource(R.string.authors_category),
-                    modifier = Modifier.padding(top = 24.dp, bottom = 8.dp)
-                )
+            if (authors.isNotEmpty()) {
+                item {
+                    CategoryTitle(
+                        stringResource(R.string.authors_category),
+                        modifier = Modifier.padding(top = 24.dp, bottom = 8.dp).testTag(SearchScreenTestTags.AUTHORS_CATEGORY)
+                    )
+                }
             }
 
             items(authors.size) {
                 SearchRowComponent(
                     modifier = Modifier
+                        .testTag(SearchScreenTestTags.AUTHOR_ITEM)
                         .fillMaxWidth()
                         .padding(top = 8.dp)
                         .clickable {
@@ -411,5 +407,8 @@ fun SearchScreen(
 @Preview
 @Composable
 fun qerqq() {
-    SearchScreen({}) {}
+    SearchScreen(
+        onBookDetailsNavigate = {},
+        onHideNavBar = {}
+    )
 }

@@ -13,12 +13,14 @@ import com.example.bookclub.R
 
 @Composable
 fun CustomNavItem(
+    modifier: Modifier,
     selectedNavigationIndex:Int,
     imageVector: ImageVector,
     index: Int,
     onClick:()->Unit
 ) {
     IconButton(
+        modifier = modifier,
         onClick = onClick
     ) {
         Icon(

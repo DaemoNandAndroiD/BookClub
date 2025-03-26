@@ -44,6 +44,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -57,6 +58,7 @@ import com.example.bookclub.screens.book_details_screen.components.ChapterItem
 import com.example.bookclub.screens.book_details_screen.components.IconTextButton
 import com.example.bookclub.screens.book_details_screen.utils.BookDetailsData
 import com.example.bookclub.screens.book_details_screen.utils.bookDetailsData
+import com.example.bookclub.screens.book_details_screen.utils.getBookDetailsData
 import com.example.bookclub.screens.book_details_screen.utils.parallaxScroll
 import com.example.bookclub.screens.bookmarks_screen.components.BookProgress
 import com.example.bookclub.ui.theme.alumniSansFontFamily
@@ -67,6 +69,7 @@ import java.util.Locale
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun BookDetailsScreen(
+    data: BookDetailsData? = null,
     navigateBack: () -> Unit,
     onRead: (Int) -> Unit
 ) {
@@ -81,7 +84,6 @@ fun BookDetailsScreen(
 
     val heightPicture = widthPx * 380 / 412
 
-
     var favoriteState by remember { mutableStateOf(false) }
 
     val listState = rememberLazyListState()
@@ -90,11 +92,14 @@ fun BookDetailsScreen(
         derivedStateOf { listState.firstVisibleItemScrollOffset.toFloat() }
     }
 
-    val alphaTop = (scrollOffsetPx/heightPicture).coerceIn(0f,1f)
+    val alphaTop = (scrollOffsetPx / heightPicture).coerceIn(0f, 1f)
+
+    val bookDetailsData = getBookDetailsData(data)
 
     LazyColumn(
         state = listState,
         modifier = Modifier
+            .testTag(BookDetailsScreenTestTag.SCROLL_CONT)
             .fillMaxSize()
     ) {
         item {
@@ -104,7 +109,6 @@ fun BookDetailsScreen(
                     .aspectRatio(412f / 380f)
                     .parallaxScroll(listState, 2f)
             ) {
-
                 Image(
                     painterResource(bookDetailsData.imageBackground),
                     contentDescription = null,
@@ -113,7 +117,8 @@ fun BookDetailsScreen(
                         .background(
                             Color.Transparent,
                             shape = RoundedCornerShape(bottomStart = 4.dp, bottomEnd = 4.dp)
-                        ),
+                        )
+                        .testTag(BookDetailsScreenTestTag.BOOK_IMAGE),
                     contentScale = ContentScale.FillBounds
                 )
 
@@ -137,7 +142,8 @@ fun BookDetailsScreen(
                     modifier = Modifier
                         .padding(start = 20.dp, top = 20.dp)
                         .statusBarsPadding()
-                        .background(colorResource(R.color.accent_dark), CircleShape),
+                        .background(colorResource(R.color.accent_dark), CircleShape)
+                        .testTag(BookDetailsScreenTestTag.BACK_BUTTON),
                     onClick = navigateBack
                 ) {
                     Icon(
@@ -165,8 +171,10 @@ fun BookDetailsScreen(
                     containerColor = R.color.accent_dark,
                     textContent = stringResource(R.string.read_button),
                     textIcon = R.drawable.ic_play,
-                    modifier = Modifier.fillMaxWidth(0.55f),
-                    onClick = {onRead(3)}
+                    modifier = Modifier
+                        .fillMaxWidth(0.55f)
+                        .testTag(BookDetailsScreenTestTag.READ_BUTTON),
+                    onClick = { onRead(3) }
                 )
 
                 IconTextButton(
@@ -176,7 +184,9 @@ fun BookDetailsScreen(
                         R.string.bookmark_button_true
                     ),
                     textIcon = if (!favoriteState) R.drawable.ic_bookmarks else R.drawable.ic_done,
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag(BookDetailsScreenTestTag.BOOKMARK_BUTTON),
                     onClick = {
                         favoriteState = !favoriteState
                     }
@@ -187,6 +197,7 @@ fun BookDetailsScreen(
         item {
             Text(
                 modifier = Modifier
+                    .testTag(BookDetailsScreenTestTag.TITLE_LARGE)
                     .fillMaxWidth()
                     .background(colorResource(R.color.background))
                     .padding(horizontal = dimensionResource(R.dimen.small_startend_padding)),
@@ -201,6 +212,7 @@ fun BookDetailsScreen(
         item {
             Text(
                 modifier = Modifier
+                    .testTag(BookDetailsScreenTestTag.TITLE_SMALL)
                     .fillMaxWidth()
                     .background(colorResource(R.color.background))
                     .padding(
@@ -239,6 +251,7 @@ fun BookDetailsScreen(
             item {
                 Text(
                     modifier = Modifier
+                        .testTag(BookDetailsScreenTestTag.PROGRESS_SECTION_TITLE)
                         .fillMaxWidth()
                         .background(colorResource(R.color.background))
                         .padding(horizontal = dimensionResource(R.dimen.small_startend_padding)),
@@ -254,6 +267,7 @@ fun BookDetailsScreen(
                 BookProgress(
                     bookDetailsData.percent,
                     modifier = Modifier
+                        .testTag(BookDetailsScreenTestTag.BOOK_PROGRESS)
                         .background(colorResource(R.color.background))
                         .padding(
                             top = 12.dp,
@@ -268,6 +282,7 @@ fun BookDetailsScreen(
         item {
             Text(
                 modifier = Modifier
+                    .testTag(BookDetailsScreenTestTag.CHAPTERS_SECTION_TITLE)
                     .fillMaxWidth()
                     .background(colorResource(R.color.background))
                     .padding(
@@ -286,6 +301,7 @@ fun BookDetailsScreen(
             ChapterItem(
                 chapterData = bookDetailsData.chapters[it],
                 modifier = Modifier
+                    .testTag(BookDetailsScreenTestTag.CHAPTER_ITEM)
                     .background(colorResource(R.color.background))
                     .padding(horizontal = dimensionResource(R.dimen.small_startend_padding)),
                 onClick = {onRead(it)}
@@ -301,5 +317,5 @@ fun BookDetailsScreen(
 @Preview
 @Composable
 fun qweq() {
-    BookDetailsScreen({}) { }
+    BookDetailsScreen(null,{}) { }
 }

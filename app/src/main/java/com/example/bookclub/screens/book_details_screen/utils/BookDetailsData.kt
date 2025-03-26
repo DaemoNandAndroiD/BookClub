@@ -43,3 +43,5 @@ val bookDetailsData = BookDetailsData(
     percent = 20f,
     chapters = chapters
 )
+
+fun getBookDetailsData(data:BookDetailsData?) = data ?: bookDetailsData

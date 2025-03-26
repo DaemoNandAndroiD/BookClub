@@ -40,6 +40,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -51,6 +52,7 @@ import androidx.compose.ui.unit.sp
 import com.example.bookclub.R
 import com.example.bookclub.screens.book_details_screen.utils.ChapterData
 import com.example.bookclub.screens.book_details_screen.utils.chapters
+import com.example.bookclub.screens.chapter_screen.ChapterScreenTestTags
 import com.example.bookclub.ui.theme.alumniSansFontFamily
 import com.example.bookclub.ui.theme.velaSansFontFamily
 import kotlinx.coroutines.launch
@@ -130,7 +132,7 @@ fun SideSheet(
                         fontFamily = alumniSansFontFamily,
                         fontWeight = FontWeight.Bold,
                         fontSize = 24.sp,
-                        modifier = Modifier.align(Alignment.CenterVertically),
+                        modifier = Modifier.testTag(ChapterScreenTestTags.SIDE_SHEET_TITLE).align(Alignment.CenterVertically),
                         color = colorResource(R.color.accent_dark)
                     )
 
@@ -138,6 +140,7 @@ fun SideSheet(
 
                     IconButton(
                         modifier = Modifier
+                            .testTag(ChapterScreenTestTags.CLOSE_SIDE_SHEET)
                             .background(Color.Transparent),
                         onClick = {
                             localVisibility = false
@@ -154,7 +157,7 @@ fun SideSheet(
 
             items(content.size){
                 Text(
-                    modifier = Modifier.padding(vertical = 14.dp, horizontal = 16.dp).clickable { onItemClick(it) },
+                    modifier = Modifier.testTag(ChapterScreenTestTags.SIDE_SHEET_ITEM).padding(vertical = 14.dp, horizontal = 16.dp).clickable { onItemClick(it) },
                     text = content[it].title,
                     fontFamily = velaSansFontFamily,
                     color = colorResource(R.color.accent_dark),

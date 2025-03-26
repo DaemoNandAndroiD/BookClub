@@ -41,6 +41,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -57,6 +58,8 @@ import com.example.bookclub.screens.library_screen.components.HorizontalCarousel
 import com.example.bookclub.screens.library_screen.utils.CarouselAdapter
 import com.example.bookclub.screens.library_screen.utils.GridItemData
 import com.example.bookclub.screens.library_screen.utils.HorizontalCarouselData
+import com.example.bookclub.screens.library_screen.utils.getCarouselData
+import com.example.bookclub.screens.library_screen.utils.getItemsGrid
 import com.example.bookclub.ui.theme.alumniSansFontFamily
 import com.google.android.material.carousel.CarouselLayoutManager
 import com.google.android.material.carousel.CarouselSnapHelper
@@ -65,65 +68,17 @@ import com.google.android.material.carousel.HeroCarouselStrategy
 @OptIn(ExperimentalFoundationApi::class, ExperimentalLayoutApi::class)
 @Composable
 fun LibraryScreen(
-    onItemClick:()->Unit
+    gridItems: List<GridItemData>? = null,
+    horizontalCarouselData: List<HorizontalCarouselData>? = null,
+    onItemClick: () -> Unit
 ) {
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
     val screenHeight = configuration.screenHeightDp.dp
 
-    val items = listOf<HorizontalCarouselData>(
-        HorizontalCarouselData(
-            R.drawable.hunger_games,
-            "Долгожданное продолжение «Голодных игр»",
-            "РАССВЕТ ЖАТВЫ"
-        ),
-        HorizontalCarouselData(
-            R.drawable.hunger_games,
-            "Долгожданное продолжение «Голодных игр»",
-            "РАССВЕТ ЖАТВЫ"
-        ),
-        HorizontalCarouselData(
-            R.drawable.hunger_games,
-            "Долгожданное продолжение «Голодных игр»",
-            "РАССВЕТ ЖАТВЫ"
-        ),
-        HorizontalCarouselData(
-            R.drawable.hunger_games,
-            "Долгожданное продолжение «Голодных игр»",
-            "РАССВЕТ ЖАТВЫ"
-        ),
-        HorizontalCarouselData(
-            R.drawable.hunger_games,
-            "Долгожданное продолжение «Голодных игр»",
-            "РАССВЕТ ЖАТВЫ"
-        ),
-        HorizontalCarouselData(
-            R.drawable.hunger_games,
-            "Долгожданное продолжение «Голодных игр»",
-            "РАССВЕТ ЖАТВЫ"
-        ),
-    )
+    val items = getCarouselData(horizontalCarouselData)
 
-    val itemsGrid = listOf(
-        GridItemData(R.drawable.image, title = "Код да винчи", author = "Дэн Браун"),
-        GridItemData(R.drawable.image, title = "Код да винчи", author = "Дэн Браун"),
-        GridItemData(R.drawable.image, title = "Код да винчи", author = "Дэн Браун"),
-        GridItemData(R.drawable.image, title = "Код да винчи", author = "Дэн Браун"),
-        GridItemData(R.drawable.image, title = "Код да винчи", author = "Дэн Браун"),
-        GridItemData(R.drawable.image, title = "Код да винчи", author = "Дэн Браун"),
-        GridItemData(R.drawable.image, title = "Код да винчи", author = "Дэн Браун"),
-        GridItemData(R.drawable.image, title = "Код да винчи", author = "Дэн Браун"),
-        GridItemData(R.drawable.image, title = "Код да винчи", author = "Дэн Браун"),
-        GridItemData(R.drawable.image, title = "Код да винчи", author = "Дэн Браун"),
-        GridItemData(R.drawable.image, title = "Код да винчи", author = "Дэн Браун"),
-        GridItemData(R.drawable.image, title = "Код да винчи", author = "Дэн Браун"),
-        GridItemData(R.drawable.image, title = "Код да винчи", author = "Дэн Браун"),
-        GridItemData(R.drawable.image, title = "Код да винчи", author = "Дэн Браун"),
-        GridItemData(R.drawable.image, title = "Код да винчи", author = "Дэн Браун"),
-        GridItemData(R.drawable.image, title = "Код да винчи", author = "Дэн Браун"),
-        GridItemData(R.drawable.image, title = "Код да винчи", author = "Дэн Браун"),
-        GridItemData(R.drawable.image, title = "Код да винчи", author = "Дэн Браун"),
-    )
+    val itemsGrid = getItemsGrid(gridItems)
 
     LazyColumn(
         modifier = Modifier
@@ -135,6 +90,7 @@ fun LibraryScreen(
         item {
             Text(
                 modifier = Modifier
+                    .testTag(LibraryScreenTestTags.screenTitle)
                     .fillMaxWidth()
                     .background(colorResource(R.color.background))
                     .padding(
@@ -148,45 +104,49 @@ fun LibraryScreen(
             )
         }
 
-        item {
-            Text(
-                modifier = Modifier.padding(
-                    top = 24.dp,
-                    bottom = dimensionResource(R.dimen.small_startend_padding)
-                ),
-                text = stringResource(R.string.new_small_title),
-                fontSize = 24.sp,
-                fontFamily = alumniSansFontFamily,
-                fontWeight = FontWeight.Bold,
-                color = colorResource(R.color.accent_dark)
-            )
-        }
+        if (items.isNotEmpty()) {
+            item {
+                Text(
+                    modifier = Modifier
+                        .testTag(LibraryScreenTestTags.newCategory)
+                        .padding(
+                            top = 24.dp,
+                            bottom = dimensionResource(R.dimen.small_startend_padding)
+                        ),
+                    text = stringResource(R.string.new_small_title),
+                    fontSize = 24.sp,
+                    fontFamily = alumniSansFontFamily,
+                    fontWeight = FontWeight.Bold,
+                    color = colorResource(R.color.accent_dark)
+                )
+            }
 
-        item {
-            AndroidView(
-                modifier = Modifier.height(screenHeight * 0.286f),
-                factory = {
-                    val view =
-                        LayoutInflater.from(it).inflate(R.layout.hero_carousel, null, false)
-                    val recyclerView = view.findViewById<RecyclerView>(R.id.carousel)
+            item {
+                AndroidView(
+                    modifier = Modifier.testTag(LibraryScreenTestTags.carousel).height(screenHeight * 0.286f),
+                    factory = {
+                        val view =
+                            LayoutInflater.from(it).inflate(R.layout.hero_carousel, null, false)
+                        val recyclerView = view.findViewById<RecyclerView>(R.id.carousel)
 
-                    val manager = CarouselLayoutManager(HeroCarouselStrategy())
-                    manager.carouselAlignment = CarouselLayoutManager.ALIGNMENT_CENTER
-                    recyclerView.layoutManager = manager
-                    val snapHelper = CarouselSnapHelper()
-                    snapHelper.attachToRecyclerView(recyclerView)
-                    recyclerView.adapter = CarouselAdapter(items){
-                        onItemClick()
+                        val manager = CarouselLayoutManager(HeroCarouselStrategy())
+                        manager.carouselAlignment = CarouselLayoutManager.ALIGNMENT_CENTER
+                        recyclerView.layoutManager = manager
+                        val snapHelper = CarouselSnapHelper()
+                        snapHelper.attachToRecyclerView(recyclerView)
+                        recyclerView.adapter = CarouselAdapter(items) {
+                            onItemClick()
+                        }
+
+                        recyclerView
                     }
-
-                    recyclerView
-                }
-            )
+                )
+            }
         }
 
         item {
             Text(
-                modifier = Modifier.padding(top = 24.dp),
+                modifier = Modifier.padding(top = 24.dp).testTag(LibraryScreenTestTags.popularCategory),
                 text = stringResource(R.string.popular_small_title),
                 fontSize = 24.sp,
                 fontFamily = alumniSansFontFamily,
@@ -203,18 +163,18 @@ fun LibraryScreen(
             ) {
                 GridItem(
                     itemsGrid[it * 3],
-                    modifier = Modifier.width((screenWidth - 64.dp) / 3),
+                    modifier = Modifier.testTag(LibraryScreenTestTags.popularItem).width((screenWidth - 64.dp) / 3),
                     onClick = onItemClick
                 )
 
                 GridItem(
                     itemsGrid[it * 3 + 1],
-                    modifier = Modifier.width((screenWidth - 64.dp) / 3),
+                    modifier = Modifier.testTag(LibraryScreenTestTags.popularItem).width((screenWidth - 64.dp) / 3),
                     onClick = onItemClick
                 )
                 GridItem(
                     itemsGrid[it * 3 + 2],
-                    modifier = Modifier.width((screenWidth - 64.dp) / 3),
+                    modifier = Modifier.testTag(LibraryScreenTestTags.popularItem).width((screenWidth - 64.dp) / 3),
                     onClick = onItemClick
                 )
             }
@@ -229,5 +189,9 @@ fun LibraryScreen(
 @Preview
 @Composable
 fun adadad() {
-    LibraryScreen({})
+    LibraryScreen(gridItems = listOf(
+        GridItemData(R.drawable.image, title = "Код да винчи", author = "Дэн Браун"),
+        GridItemData(R.drawable.image, title = "Код да винчи", author = "Дэн Браун"),
+        GridItemData(R.drawable.image, title = "Код да винчи", author = "Дэн Браун")
+    ), null) {}
 }

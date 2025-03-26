@@ -34,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -76,6 +77,7 @@ fun CustomBottomNavigation(
             Spacer(Modifier.weight(1f))
 
             CustomNavItem(
+                modifier = Modifier.testTag(MainScreenTestTags.LIBRARY_NAV),
                 selectedNavigationIndex = selectedNavigationIndex,
                 imageVector = ImageVector.vectorResource(R.drawable.ic_library),
                 index = 0,
@@ -87,6 +89,7 @@ fun CustomBottomNavigation(
             Spacer(Modifier.weight(1f))
 
             CustomNavItem(
+                modifier = Modifier.testTag(MainScreenTestTags.SEARCH_NAV),
                 selectedNavigationIndex = selectedNavigationIndex,
                 imageVector = Icons.Default.Search,
                 index = 1,
@@ -98,6 +101,7 @@ fun CustomBottomNavigation(
             Spacer(Modifier.weight(6f))
 
             CustomNavItem(
+                modifier = Modifier.testTag(MainScreenTestTags.BOOKMARKS_NAV),
                 selectedNavigationIndex = selectedNavigationIndex,
                 imageVector = ImageVector.vectorResource(R.drawable.ic_bookmarks),
                 index = 2,
@@ -109,6 +113,7 @@ fun CustomBottomNavigation(
             Spacer(Modifier.weight(1f))
 
             CustomNavItem(
+                modifier = Modifier.testTag(MainScreenTestTags.LOGOUT_NAV),
                 selectedNavigationIndex = selectedNavigationIndex,
                 imageVector = ImageVector.vectorResource(R.drawable.ic_logout),
                 index = 3,
@@ -177,7 +182,8 @@ fun CustomBottomNavigation(
                                 fontSize = 16.sp,
                                 fontFamily = velaSansFontFamily,
                                 fontWeight = FontWeight.Bold,
-                                color = colorResource(R.color.black)
+                                color = colorResource(R.color.black),
+                                modifier = Modifier.testTag(MainScreenTestTags.DIALOG_CONFIRM)
                             )
                         }
                     }

@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -58,6 +59,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalTextToolbar
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -236,6 +238,7 @@ fun ChapterScreen(
                     .padding(bottom = paddingValue.calculateBottomPadding() + 16.dp)
                     .fillMaxSize()
                     .statusBarsPadding()
+                    .systemBarsPadding()
             ) {
                 Row(
                     modifier = Modifier
@@ -249,6 +252,7 @@ fun ChapterScreen(
                 ) {
                     IconButton(
                         modifier = Modifier
+                            .testTag(ChapterScreenTestTags.BACK_BUTTON)
                             .align(Alignment.CenterVertically)
                             .background(colorResource(R.color.accent_dark), CircleShape),
                         onClick = navigateBack
@@ -271,16 +275,17 @@ fun ChapterScreen(
                             fontFamily = alumniSansFontFamily,
                             fontWeight = FontWeight.Bold,
                             fontSize = 24.sp,
-                            color = colorResource(R.color.accent_dark)
+                            color = colorResource(R.color.accent_dark),
+                            modifier = Modifier.testTag(ChapterScreenTestTags.BOOK_TITLE)
                         )
 
                         Text(
                             text = chapterDataExt[currentChapter].chapterTitle,
-                            modifier = Modifier.align(Alignment.CenterHorizontally),
+                            modifier = Modifier.align(Alignment.CenterHorizontally).testTag(ChapterScreenTestTags.CHAPTER_TITLE),
                             fontFamily = velaSansFontFamily,
                             fontWeight = FontWeight.Normal,
                             fontSize = 14.sp,
-                            color = colorResource(R.color.accent_dark)
+                            color = colorResource(R.color.accent_dark),
                         )
                     }
 

@@ -81,7 +81,7 @@ suspend fun ScrollableState.autoScroll(
 ) {
     var previousValue = 0f
     scroll(MutatePriority.PreventUserInput) {
-        animate(0f, 204f, animationSpec = animationSpec) { currentValue, _ ->
+        animate(0f, 100f, animationSpec = animationSpec) { currentValue, _ ->
             previousValue += scrollBy(currentValue - previousValue)
         }
     }

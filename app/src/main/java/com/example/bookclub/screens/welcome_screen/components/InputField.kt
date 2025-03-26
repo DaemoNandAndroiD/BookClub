@@ -27,6 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.bookclub.R
+import com.example.bookclub.screens.welcome_screen.WelcomeScreenTestTags
 import com.example.bookclub.ui.theme.velaSansFontFamily
 
 @Composable
@@ -50,7 +51,7 @@ fun InputField(
                 fontWeight = FontWeight.Normal,
                 color = colorResource(R.color.accent_medium)
                 ) },
-        modifier = Modifier.fillMaxWidth().testTag(tag = "login_input_field"),
+        modifier = Modifier.fillMaxWidth().testTag(tag = WelcomeScreenTestTags.loginInput),
         textStyle = TextStyle(
             fontFamily = velaSansFontFamily,
             fontSize = 14.sp,
